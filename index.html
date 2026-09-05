@@ -1,1020 +1,246 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#050705">
+<title>ROAMZ — No Fixed Destination</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--lime:#b7ff00;--lime2:#7db300;--olive:#1c2900;--ink:#050705;--muted:#8d9788;--line:rgba(183,255,0,.26);--danger:#ff6f6f}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#000;color:#f3f5f1}
+body{font-family:"Space Grotesk",sans-serif;overflow-x:hidden;background:radial-gradient(circle at 50% -5%,#c5ff00 0%,#86bb00 18%,#334800 38%,#0b1006 63%,#000 88%)}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;opacity:.07;background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.18) 0 1px,transparent 1px 3px);mix-blend-mode:soft-light}
+body:after{content:"";position:fixed;inset:-20%;pointer-events:none;z-index:-1;background:radial-gradient(circle,rgba(183,255,0,.17),transparent 58%);filter:blur(90px);animation:ambient 7s ease-in-out infinite}
+@keyframes ambient{0%,100%{transform:translate(-4%,0) scale(.92);opacity:.55}50%{transform:translate(4%,3%) scale(1.08);opacity:1}}
+button,input,a{font:inherit}button{cursor:pointer}.screen{display:none;position:relative;min-height:100vh;min-height:100dvh;width:100%;padding:max(26px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right)) max(30px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left));overflow:hidden}
+.screen.active{display:flex;animation:in .55s cubic-bezier(.2,.8,.2,1)}@keyframes in{from{opacity:0;filter:blur(10px);transform:translateY(14px)}to{opacity:1;filter:blur(0);transform:none}}
+.inner{width:min(1100px,100%);margin:auto;position:relative;z-index:2}.mono{font-family:"IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.13em}.eyebrow{font-size:11px;color:#b7c4b1}.muted{color:var(--muted)}.lime{color:var(--lime)}
+.btn{appearance:none;border:1px solid rgba(183,255,0,.5);background:rgba(0,0,0,.38);color:#f4f7f1;padding:15px 20px;text-decoration:none;font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;transition:.2s;backdrop-filter:blur(10px)}
+.btn:hover,.btn:focus-visible{border-color:var(--lime);color:#050705;background:var(--lime);box-shadow:0 0 30px rgba(183,255,0,.22);outline:none}.btn.primary{background:var(--lime);color:#050705;border-color:var(--lime);font-weight:600}
+.corner-status{position:fixed;top:22px;left:24px;font-size:10px;z-index:20;color:#cad1c6}.corner-brand{position:fixed;right:24px;bottom:22px;z-index:20;font-size:10px;color:#788073}
 
-  <title>ROAMZ — No Fixed Destination</title>
+/* Landing */
+#landing{align-items:center}.landing-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.75fr);gap:48px;align-items:center}
+.hero-title{font-family:"Syne",sans-serif;font-weight:800;font-size:clamp(76px,14vw,190px);line-height:.72;letter-spacing:-.085em;margin:20px 0 0}.hero-copy{font-size:clamp(22px,3vw,36px);margin:36px 0 0}.hero-sub{margin:12px 0 0;color:#aab4a6}.hero-actions{display:flex;gap:12px;margin-top:40px;flex-wrap:wrap}
+.figure{position:relative;width:min(380px,72vw);aspect-ratio:1/1.15;margin:auto;filter:drop-shadow(0 30px 60px rgba(0,0,0,.45));animation:float 4.8s ease-in-out infinite}@keyframes float{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-12px) rotate(1deg)}}
+.figure-glow{position:absolute;width:90%;height:65%;left:5%;top:8%;border-radius:50%;background:rgba(183,255,0,.28);filter:blur(70px)}
+.head{position:absolute;z-index:2;width:58%;aspect-ratio:1/.96;left:21%;top:5%;background:#000;border-radius:48% 48% 44% 44%}.eye{position:absolute;width:10%;height:19%;top:48%;background:linear-gradient(#e2e2e2,#9da19d);border-radius:50%}.eye.l{left:34%}.eye.r{right:34%}
+.collar{position:absolute;z-index:1;width:66%;height:28%;left:17%;top:52%;background:#020302;border-radius:48% 48% 24% 24%;border:1px solid rgba(183,255,0,.06)}.bodyshape{position:absolute;z-index:1;width:84%;height:44%;left:8%;bottom:2%;background:linear-gradient(#050705,#000);border-radius:44% 44% 16% 16%;border:1px solid rgba(183,255,0,.05)}
+.scan{position:absolute;inset:0;z-index:4;overflow:hidden}.scan:after{content:"";position:absolute;height:2px;left:10%;right:10%;background:linear-gradient(90deg,transparent,var(--lime),transparent);box-shadow:0 0 18px rgba(183,255,0,.7);animation:scan 4s linear infinite}@keyframes scan{from{top:5%;opacity:0}10%{opacity:.7}90%{opacity:.7}to{top:95%;opacity:0}}
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+/* Game */
+#game{align-items:center}.game-shell{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:18px}.game-card,.hud,.pass,.tasks,.formpanel,.successpanel{border:1px solid var(--line);background:rgba(0,0,0,.48);backdrop-filter:blur(12px);box-shadow:0 18px 70px rgba(0,0,0,.28)}
+.game-card{padding:10px;min-width:0}.game-top{display:flex;justify-content:space-between;align-items:center;padding:8px 6px 14px;gap:12px}.game-title{font-family:"Syne",sans-serif;font-size:clamp(28px,5vw,52px);margin:0;letter-spacing:-.04em}
+.canvaswrap{position:relative;width:100%;aspect-ratio:4/3;min-height:320px;overflow:hidden;background:#060806;border:1px solid rgba(255,255,255,.05)}canvas{width:100%;height:100%;display:block;touch-action:none}.vignette{position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 90px 35px rgba(0,0,0,.76)}.hint{position:absolute;left:14px;bottom:12px;padding:8px 10px;background:rgba(0,0,0,.66);border:1px solid rgba(183,255,0,.2);font:9px "IBM Plex Mono",monospace;color:#bac4b5}
+.hud{padding:20px}.hudsec{padding-bottom:20px;margin-bottom:20px;border-bottom:1px solid rgba(183,255,0,.13)}.hudsec:last-child{border:0;margin:0;padding:0}.label{font:9px "IBM Plex Mono",monospace;letter-spacing:.1em;color:#798274}.value{font:14px "IBM Plex Mono",monospace;margin-top:7px}.bar{margin-top:12px;height:5px;background:#15200c;overflow:hidden}.bar i{display:block;height:100%;width:15%;background:var(--lime);box-shadow:0 0 18px var(--lime);transition:width .25s}
+.controls{display:none;margin:18px auto 0;width:190px;height:145px;position:relative;user-select:none;touch-action:none}.dpad{position:absolute;width:58px;height:58px;border:1px solid rgba(183,255,0,.35);background:rgba(0,0,0,.65);color:#e8eee3;font:18px "IBM Plex Mono",monospace;display:grid;place-items:center;border-radius:12px}.dpad.active{background:var(--lime);color:#000}.up{top:0;left:66px}.down{bottom:0;left:66px}.left{left:0;top:66px}.right{right:0;top:66px}
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+/* Gate */
+#gate{align-items:center}.gate-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.8fr);gap:28px;align-items:center}.gate-title{font-family:"Syne",sans-serif;font-size:clamp(60px,12vw,150px);line-height:.75;letter-spacing:-.07em;margin:14px 0 24px}.gate-code{display:inline-block;border:1px solid var(--lime);color:var(--lime);padding:7px 10px;font-size:10px}.pass{padding:24px}.passhead{display:flex;justify-content:space-between;padding-bottom:18px;border-bottom:1px solid rgba(183,255,0,.14)}.passgrid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:22px}.actions{display:flex;gap:10px;margin-top:28px;flex-wrap:wrap}
 
-    :root {
-      --bg: #efefe7;
-      --black: #111111;
-      --green: #b7ff00;
-      --grey: #777;
-    }
+/* Claim */
+#claim{align-items:flex-start}.claimhead{padding-top:52px;margin-bottom:26px}.claimtitle{font-family:"Syne",sans-serif;font-size:clamp(50px,9vw,110px);line-height:.82;letter-spacing:-.06em;margin:10px 0 0}.claimgrid{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:18px}.tasks,.formpanel{padding:22px}
+.task{display:grid;grid-template-columns:32px 1fr auto;gap:14px;align-items:center;padding:18px 0;border-bottom:1px solid rgba(183,255,0,.13)}.task:last-child{border:0}.tasknum{font:10px "IBM Plex Mono",monospace;color:#667060}.task small{display:block;color:#879082;margin-top:4px}.task.done .tasknum,.task.done strong{color:var(--lime)}.task.done .tasknum:after{content:" ✓"}
+.field{margin-bottom:22px}.field label{display:block;font:9px "IBM Plex Mono",monospace;letter-spacing:.12em;color:#8f998a;margin-bottom:10px}.field input{width:100%;border:1px solid rgba(183,255,0,.2);background:#050705;color:#f3f5f1;padding:15px 14px;outline:none}.field input:focus{border-color:var(--lime);box-shadow:0 0 0 2px rgba(183,255,0,.07)}
+.submit{width:100%;border:0;background:var(--lime);color:#020302;padding:16px 18px;font:600 12px "IBM Plex Mono",monospace;letter-spacing:.08em;text-transform:uppercase}.submit:disabled{opacity:.42;cursor:not-allowed}.message{min-height:18px;margin-top:14px;font:10px "IBM Plex Mono",monospace;color:#aeb8aa;text-align:center}.message.error{color:var(--danger)}
 
-    body {
-      background: var(--bg);
-      color: var(--black);
-      min-height: 100vh;
-      font-family: "Space Grotesk", sans-serif;
-    }
+/* Success */
+#success{align-items:center}.successpanel{width:min(760px,100%);padding:clamp(28px,5vw,56px);text-align:center;margin:auto}.successtitle{font-family:"Syne",sans-serif;font-size:clamp(58px,11vw,130px);line-height:.78;letter-spacing:-.065em;margin:20px 0 30px}.successgrid{width:min(430px,100%);margin:28px auto 0;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(183,255,0,.14);border:1px solid rgba(183,255,0,.14)}.successgrid>div{background:#050705;padding:18px;text-align:left}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(30px);background:#050705;border:1px solid var(--lime);padding:12px 16px;font:10px "IBM Plex Mono",monospace;opacity:0;pointer-events:none;transition:.25s;z-index:200}.toast.show{opacity:1;transform:translateX(-50%)}
 
-    button,
-    input,
-    a {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    .screen {
-      display: none;
-      min-height: 100vh;
-      padding: 32px;
-    }
-
-    .screen.active {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .center {
-      width: 100%;
-      max-width: 900px;
-      text-align: center;
-    }
-
-    .mono {
-      font-family: "IBM Plex Mono", monospace;
-      text-transform: uppercase;
-      letter-spacing: .12em;
-    }
-
-    .tiny {
-      font-size: 11px;
-    }
-
-    .logo {
-      font-family: "Syne", sans-serif;
-      font-size: clamp(72px, 15vw, 170px);
-      font-weight: 800;
-      line-height: .8;
-      letter-spacing: -.08em;
-    }
-
-    .tagline {
-      margin-top: 36px;
-      font-size: clamp(20px, 3vw, 32px);
-      font-weight: 500;
-    }
-
-    .sub {
-      margin-top: 14px;
-      color: var(--grey);
-    }
-
-    .btn {
-      display: inline-block;
-      background: transparent;
-      color: var(--black);
-      border: 1.5px solid var(--black);
-      padding: 16px 24px;
-      text-decoration: none;
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 12px;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      transition: .2s;
-    }
-
-    .btn:hover {
-      background: var(--black);
-      color: white;
-    }
-
-    .btn.primary {
-      background: var(--black);
-      color: white;
-    }
-
-    .btn.primary:hover {
-      background: var(--green);
-      color: black;
-    }
-
-    .hero-button {
-      margin-top: 48px;
-    }
-
-    .footer {
-      position: fixed;
-      bottom: 24px;
-      left: 0;
-      width: 100%;
-      text-align: center;
-      opacity: .45;
-    }
-
-    /* ROUTE */
-
-    .route-box {
-      max-width: 760px;
-      margin: auto;
-    }
-
-    .route-step {
-      margin-bottom: 24px;
-    }
-
-    .route-title {
-      font-family: "Syne", sans-serif;
-      font-size: clamp(38px, 7vw, 72px);
-      font-weight: 800;
-      margin-top: 24px;
-    }
-
-    .route-options {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-top: 44px;
-    }
-
-    .route-options button {
-      min-height: 88px;
-    }
-
-    /* PASS */
-
-    .pass {
-      border: 1.5px solid var(--black);
-      max-width: 520px;
-      margin: 36px auto 0;
-      padding: 28px;
-      text-align: left;
-    }
-
-    .pass-top {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 30px;
-    }
-
-    .pass-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-    }
-
-    .pass-label {
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 10px;
-      color: var(--grey);
-      letter-spacing: .1em;
-    }
-
-    .pass-value {
-      margin-top: 6px;
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 15px;
-      font-weight: 600;
-    }
-
-    /* CLAIM */
-
-    .claim-wrap {
-      width: 100%;
-      max-width: 720px;
-      margin: auto;
-    }
-
-    .claim-title {
-      font-family: "Syne", sans-serif;
-      font-size: clamp(48px, 8vw, 82px);
-      font-weight: 800;
-    }
-
-    .tasks {
-      margin-top: 48px;
-      border-top: 1px solid #aaa;
-    }
-
-    .task {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      padding: 18px 0;
-      border-bottom: 1px solid #aaa;
-      text-align: left;
-    }
-
-    .task-number {
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 11px;
-      opacity: .5;
-    }
-
-    .task-text {
-      flex: 1;
-    }
-
-    form {
-      margin-top: 56px;
-      text-align: left;
-    }
-
-    .field {
-      margin-bottom: 30px;
-    }
-
-    .field label {
-      display: block;
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 10px;
-      letter-spacing: .12em;
-      margin-bottom: 10px;
-    }
-
-    .field input {
-      width: 100%;
-      border: none;
-      border-bottom: 1.5px solid var(--black);
-      background: transparent;
-      padding: 12px 0;
-      font-size: 18px;
-      outline: none;
-    }
-
-    .submit {
-      width: 100%;
-      padding: 18px;
-      border: none;
-      background: var(--black);
-      color: white;
-      font-family: "IBM Plex Mono", monospace;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-    }
-
-    .submit:hover {
-      background: var(--green);
-      color: black;
-    }
-
-    .submit:disabled {
-      opacity: .5;
-      cursor: wait;
-    }
-
-    .message {
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 12px;
-      margin-top: 18px;
-      text-align: center;
-      min-height: 18px;
-    }
-
-    .error {
-      color: #c72d2d;
-    }
-
-    /* SUCCESS */
-
-    .success-mark {
-      font-family: "IBM Plex Mono", monospace;
-      display: inline-block;
-      border: 1px solid black;
-      padding: 8px 12px;
-      margin-bottom: 28px;
-    }
-
-    .success-title {
-      font-family: "Syne", sans-serif;
-      font-size: clamp(54px, 10vw, 110px);
-      font-weight: 800;
-      line-height: .9;
-    }
-
-    .status-card {
-      margin: 42px auto 0;
-      max-width: 430px;
-      border: 1px solid black;
-      padding: 24px;
-    }
-
-    @media(max-width: 650px) {
-      .screen {
-        padding: 22px;
-      }
-
-      .route-options {
-        grid-template-columns: 1fr;
-      }
-
-      .pass-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .task {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .task .btn {
-        width: 100%;
-        text-align: center;
-      }
-    }
-  </style>
+@media(max-width:860px){.landing-grid,.gate-grid,.claimgrid,.game-shell{grid-template-columns:1fr}.landing-grid{text-align:center}.hero-actions{justify-content:center}.figure{width:min(320px,72vw)}.hud{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.hudsec{border:0;border-right:1px solid rgba(183,255,0,.13);margin:0;padding:0 12px 0 0}.hudsec:last-child{border:0}.claimhead{padding-top:20px}.controls{display:block}}
+@media(max-width:560px){.screen{padding-left:16px;padding-right:16px}.corner-status{left:16px;top:14px}.corner-brand{right:16px;bottom:14px}.hero-title{font-size:clamp(68px,26vw,110px)}.canvaswrap{min-height:280px;aspect-ratio:1}.hud{grid-template-columns:1fr 1fr;padding:16px}.hudsec{border-right:0;border-bottom:1px solid rgba(183,255,0,.13);padding-bottom:12px;margin-bottom:12px}.hudsec:nth-child(2){border-bottom:0}.hudsec:nth-child(3){grid-column:1/-1;border:0;margin:0}.passgrid,.successgrid{grid-template-columns:1fr}.task{grid-template-columns:28px 1fr}.task .btn{grid-column:1/-1;width:100%;text-align:center}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style>
 </head>
-
 <body>
 
-<!-- LANDING -->
+<div class="corner-status mono">ROAMZ / SIGNAL ONLINE</div>
+<div class="corner-brand mono">ROAMZ.FUN</div>
+<div id="toast" class="toast">SIGNAL FOUND</div>
+
 <section id="landing" class="screen active">
-  <div class="center">
-
-    <div class="mono tiny">STATUS: ROAMING</div>
-
-    <h1 class="logo">ROAMZ</h1>
-
-    <p class="tagline">NO FIXED DESTINATION.</p>
-
-    <p class="sub">1,111 kept walking.</p>
-
-    <button class="btn primary hero-button" onclick="startRoute()">
-      ENTER THE ROUTE →
-    </button>
-
-  </div>
-</section>
-
-
-<!-- ROUTE GAME -->
-<section id="route" class="screen">
-  <div class="center route-box">
-
-    <div id="routeStep" class="mono tiny">
-      STOP 01 / 03
+  <div class="inner landing-grid">
+    <div>
+      <div class="eyebrow mono">GENESIS / 1,111 WANDERERS</div>
+      <h1 class="hero-title">ROAMZ</h1>
+      <p class="hero-copy">NO FIXED DESTINATION.</p>
+      <p class="hero-sub">The Route is open. Find Gate 404 to submit your allowlist entry.</p>
+      <div class="hero-actions">
+        <button class="btn primary" onclick="startGame()">ENTER THE ROUTE →</button>
+        <a class="btn" id="landingX" target="_blank" rel="noopener">X / TWITTER ↗</a>
+      </div>
     </div>
 
-    <h2 id="routeTitle" class="route-title">
-      THE ROAD SPLITS.
-    </h2>
-
-    <div id="routeOptions" class="route-options"></div>
-
+    <div class="figure">
+      <div class="figure-glow"></div>
+      <div class="bodyshape"></div>
+      <div class="collar"></div>
+      <div class="head"><span class="eye l"></span><span class="eye r"></span></div>
+      <div class="scan"></div>
+    </div>
   </div>
 </section>
 
+<section id="game" class="screen">
+  <div class="inner">
+    <div class="game-shell">
+      <div class="game-card">
+        <div class="game-top">
+          <div><div class="eyebrow mono">THE ROUTE / TOP-DOWN SIGNAL</div><h2 class="game-title">FIND GATE 404.</h2></div>
+          <button class="btn" onclick="resetGame()">RESET</button>
+        </div>
+        <div class="canvaswrap">
+          <canvas id="routeCanvas" width="900" height="675"></canvas>
+          <div class="vignette"></div>
+          <div class="hint">DESKTOP: WASD / ARROWS · MOBILE: D-PAD</div>
+        </div>
+        <div class="controls">
+          <button class="dpad up" data-dir="up">▲</button>
+          <button class="dpad left" data-dir="left">◀</button>
+          <button class="dpad right" data-dir="right">▶</button>
+          <button class="dpad down" data-dir="down">▼</button>
+        </div>
+      </div>
 
-<!-- GATE / PASS -->
+      <aside class="hud">
+        <div class="hudsec"><div class="label">STATUS</div><div id="hudStatus" class="value">ROAMING</div></div>
+        <div class="hudsec"><div class="label">DISTANCE</div><div id="hudDistance" class="value">0M</div></div>
+        <div class="hudsec"><div class="label">GATE SIGNAL</div><div id="hudSignal" class="value">WEAK</div><div class="bar"><i id="signalFill"></i></div></div>
+      </aside>
+    </div>
+  </div>
+</section>
+
 <section id="gate" class="screen">
-  <div class="center">
-
-    <div class="mono tiny">
-      GATE 404
+  <div class="inner gate-grid">
+    <div>
+      <span class="gate-code mono">GATE 404 / SIGNAL FOUND</span>
+      <h2 class="gate-title">YOU<br>FOUND IT.</h2>
+      <p class="muted">The Route recorded your movement. Your pass is ready.</p>
+      <div class="actions">
+        <button class="btn primary" onclick="showClaim()">CLAIM WL →</button>
+        <button class="btn" onclick="startGame()">ROAM AGAIN</button>
+      </div>
     </div>
-
-    <h2 class="route-title">
-      FOUND.
-    </h2>
 
     <div class="pass">
-
-      <div class="pass-top">
-        <strong class="mono tiny">ROAMZ PASS</strong>
-        <span class="mono tiny">404</span>
+      <div class="passhead"><div><div class="eyebrow mono">ROAMZ PASS</div><div class="value">GATE 404</div></div><div class="lime mono">VALID</div></div>
+      <div class="passgrid">
+        <div><div class="label">ROUTE</div><div class="value" id="passRoute">OFF-ROUTE</div></div>
+        <div><div class="label">STATUS</div><div class="value" id="passStatus">DETOURED</div></div>
+        <div><div class="label">DESTINATION</div><div class="value" id="passDestination">UNKNOWN</div></div>
+        <div><div class="label">DISTANCE</div><div class="value" id="passDistance">0M</div></div>
       </div>
-
-      <div class="pass-grid">
-
-        <div>
-          <div class="pass-label">ROUTE</div>
-          <div id="passRoute" class="pass-value"></div>
-        </div>
-
-        <div>
-          <div class="pass-label">STATUS</div>
-          <div id="passStatus" class="pass-value"></div>
-        </div>
-
-        <div>
-          <div class="pass-label">DESTINATION</div>
-          <div id="passDestination" class="pass-value"></div>
-        </div>
-
-        <div>
-          <div class="pass-label">STOPS</div>
-          <div class="pass-value">03</div>
-        </div>
-
-      </div>
-
     </div>
-
-    <button class="btn primary hero-button" onclick="showClaim()">
-      CONTINUE →
-    </button>
-
   </div>
 </section>
 
-
-<!-- CLAIM WL -->
 <section id="claim" class="screen">
-  <div class="claim-wrap">
+  <div class="inner">
+    <div class="claimhead"><div class="eyebrow mono">GATE 404 / ALLOWLIST</div><h2 class="claimtitle">COMPLETE<br>THE SIGNAL.</h2></div>
+    <div class="claimgrid">
+      <div class="tasks">
+        <div class="eyebrow mono">X TASKS</div>
+        <div class="task" id="taskFollow"><div class="tasknum">01</div><div><strong>Follow Roamz</strong><small>Open the official X profile.</small></div><a class="btn" id="followLink" target="_blank" rel="noopener">FOLLOW ↗</a></div>
+        <div class="task" id="taskLike"><div class="tasknum">02</div><div><strong>Like the WL post</strong><small>Open the allowlist announcement.</small></div><a class="btn" id="postLink1" target="_blank" rel="noopener">VIEW POST ↗</a></div>
+        <div class="task" id="taskReply"><div class="tasknum">03</div><div><strong>Reply to the post</strong><small>Then paste your reply URL.</small></div><a class="btn" id="postLink2" target="_blank" rel="noopener">REPLY ↗</a></div>
+        <p class="muted" style="font-size:12px;line-height:1.6;margin:18px 0 0">Clicking only marks a task as opened. Final approval is reviewed from your X handle and reply URL.</p>
+      </div>
 
-    <div class="mono tiny">
-      GATE 404 / ALLOWLIST
+      <form id="whitelistForm" class="formpanel">
+        <div class="eyebrow mono" style="margin-bottom:22px">SUBMIT ENTRY</div>
+        <div class="field"><label for="x_handle">X HANDLE</label><input id="x_handle" type="text" placeholder="@username" required></div>
+        <div class="field"><label for="wallet_address">EVM WALLET ADDRESS</label><input id="wallet_address" type="text" placeholder="0x..." required></div>
+        <div class="field"><label for="comment_url">COMMENT / REPLY URL</label><input id="comment_url" type="url" placeholder="https://x.com/username/status/..." required></div>
+        <button id="submitButton" class="submit" type="submit">SUBMIT ENTRY →</button>
+        <div id="formMessage" class="message"></div>
+      </form>
     </div>
-
-    <h2 class="claim-title">
-      COMPLETE<br>THE SIGNAL.
-    </h2>
-
-    <div class="tasks">
-
-      <div class="task">
-        <span class="task-number">01</span>
-
-        <div class="task-text">
-          <strong>Follow Roamz</strong>
-          <div class="sub" style="margin-top:4px;">
-            Follow our X account.
-          </div>
-        </div>
-
-        <a
-          class="btn"
-          id="followLink"
-          target="_blank"
-          rel="noopener"
-        >
-          FOLLOW ↗
-        </a>
-      </div>
-
-
-      <div class="task">
-        <span class="task-number">02</span>
-
-        <div class="task-text">
-          <strong>Like the WL post</strong>
-          <div class="sub" style="margin-top:4px;">
-            Find the signal.
-          </div>
-        </div>
-
-        <a
-          class="btn"
-          id="postLink1"
-          target="_blank"
-          rel="noopener"
-        >
-          VIEW POST ↗
-        </a>
-      </div>
-
-
-      <div class="task">
-        <span class="task-number">03</span>
-
-        <div class="task-text">
-          <strong>Reply to the post</strong>
-          <div class="sub" style="margin-top:4px;">
-            Leave your mark on The Route.
-          </div>
-        </div>
-
-        <a
-          class="btn"
-          id="postLink2"
-          target="_blank"
-          rel="noopener"
-        >
-          REPLY ↗
-        </a>
-      </div>
-
-    </div>
-
-
-    <form id="whitelistForm">
-
-      <div class="field">
-        <label>X HANDLE</label>
-
-        <input
-          id="x_handle"
-          type="text"
-          placeholder="@username"
-          required
-        >
-      </div>
-
-
-      <div class="field">
-        <label>EVM WALLET ADDRESS</label>
-
-        <input
-          id="wallet_address"
-          type="text"
-          placeholder="0x..."
-          required
-        >
-      </div>
-
-
-      <div class="field">
-        <label>YOUR COMMENT / REPLY URL</label>
-
-        <input
-          id="comment_url"
-          type="url"
-          placeholder="https://x.com/username/status/..."
-          required
-        >
-      </div>
-
-
-      <button
-        id="submitButton"
-        type="submit"
-        class="submit"
-      >
-        SUBMIT ENTRY →
-      </button>
-
-      <div id="formMessage" class="message"></div>
-
-    </form>
-
   </div>
 </section>
 
-
-<!-- SUCCESS -->
 <section id="success" class="screen">
-  <div class="center">
-
-    <div class="success-mark">
-      GATE 404
+  <div class="inner">
+    <div class="successpanel">
+      <div class="gate-code mono">GATE 404 / ENTRY LOGGED</div>
+      <h2 class="successtitle">ENTRY<br>RECEIVED.</h2>
+      <p class="muted">Keep your reply live until the final allowlist snapshot.</p>
+      <div class="successgrid">
+        <div><div class="label">STATUS</div><div class="value lime">PENDING REVIEW</div></div>
+        <div><div class="label">DESTINATION</div><div class="value">ALLOWLIST</div></div>
+      </div>
+      <div style="margin-top:34px"><span class="mono" style="font-size:10px;color:#7f897a">KEEP ROAMING.</span></div>
     </div>
-
-    <h2 class="success-title">
-      ENTRY<br>RECEIVED.
-    </h2>
-
-    <div class="status-card">
-
-      <div class="pass-label">
-        STATUS
-      </div>
-
-      <div class="pass-value">
-        PENDING REVIEW
-      </div>
-
-      <br>
-
-      <div class="pass-label">
-        DESTINATION
-      </div>
-
-      <div class="pass-value">
-        ALLOWLIST
-      </div>
-
-    </div>
-
-    <p class="sub" style="margin-top:30px;">
-      Keep your reply live until the final snapshot.
-    </p>
-
-    <p class="mono tiny" style="margin-top:40px;">
-      KEEP ROAMING.
-    </p>
-
   </div>
 </section>
-
-
-<div class="footer mono tiny">
-  ROAMZ.FUN
-</div>
-
 
 <script>
-
-  /*
-  ========================================
-  EDIT ONLY THESE 2 URLs
-  ========================================
-  */
-
-  const X_PROFILE =
-    "https://x.com/YOUR_USERNAME";
-
-  const WL_POST =
-    "https://x.com/YOUR_USERNAME/status/YOUR_POST_ID";
-
-
-  /*
-  ========================================
-  X LINKS
-  ========================================
-  */
-
-  document.getElementById("followLink").href =
-    X_PROFILE;
-
-  document.getElementById("postLink1").href =
-    WL_POST;
-
-  document.getElementById("postLink2").href =
-    WL_POST;
-
-
-  /*
-  ========================================
-  SCREEN CONTROL
-  ========================================
-  */
-
-  function showScreen(id) {
-
-    document
-      .querySelectorAll(".screen")
-      .forEach(screen => {
-        screen.classList.remove("active");
-      });
-
-    document
-      .getElementById(id)
-      .classList.add("active");
-
-    window.scrollTo(0, 0);
-  }
-
-
-  /*
-  ========================================
-  ROUTE GAME
-  ========================================
-  */
-
-  const stages = [
-
-    {
-      title:
-        "THE ROAD SPLITS.",
-
-      options: [
-        "FOLLOW THE LIGHT",
-        "TAKE THE WRONG TURN"
-      ]
-    },
-
-    {
-      title:
-        "THE SIGN IS BLANK.",
-
-      options: [
-        "GO NORTH",
-        "FOLLOW ???"
-      ]
-    },
-
-    {
-      title:
-        "A SIGNAL APPEARS.",
-
-      options: [
-        "FOLLOW SIGNAL",
-        "KEEP ROAMING"
-      ]
-    }
-
-  ];
-
-
-  let stage = 0;
-  let choices = [];
-
-
-  function startRoute() {
-
-    stage = 0;
-    choices = [];
-
-    showScreen("route");
-    renderStage();
-  }
-
-
-  function renderStage() {
-
-    document.getElementById(
-      "routeStep"
-    ).textContent =
-      `STOP 0${stage + 1} / 03`;
-
-    document.getElementById(
-      "routeTitle"
-    ).textContent =
-      stages[stage].title;
-
-    const options =
-      document.getElementById(
-        "routeOptions"
-      );
-
-    options.innerHTML = "";
-
-    stages[stage].options.forEach(option => {
-
-      const button =
-        document.createElement(
-          "button"
-        );
-
-      button.className = "btn";
-
-      button.textContent =
-        option;
-
-      button.onclick = () =>
-        chooseRoute(option);
-
-      options.appendChild(
-        button
-      );
-
-    });
-
-  }
-
-
-  function chooseRoute(choice) {
-
-    choices.push(choice);
-
-    if (
-      stage <
-      stages.length - 1
-    ) {
-
-      stage++;
-      renderStage();
-
-    } else {
-
-      generatePass();
-
-    }
-
-  }
-
-
-  /*
-  ========================================
-  ROUTE PASS
-  ========================================
-  */
-
-  function generatePass() {
-
-    const routes = [
-      "NORTH",
-      "SOUTH",
-      "EAST",
-      "WEST",
-      "OFF-ROUTE"
-    ];
-
-    const statuses = [
-      "ROAMING",
-      "LOST",
-      "DETOURED",
-      "EXPLORING",
-      "MISROUTED"
-    ];
-
-    const destinations = [
-      "UNKNOWN",
-      "NOWHERE",
-      "SOMEWHERE",
-      "???"
-    ];
-
-
-    const route =
-      routes[
-        Math.floor(
-          Math.random() *
-          routes.length
-        )
-      ];
-
-    const status =
-      statuses[
-        Math.floor(
-          Math.random() *
-          statuses.length
-        )
-      ];
-
-    const destination =
-      destinations[
-        Math.floor(
-          Math.random() *
-          destinations.length
-        )
-      ];
-
-
-    document.getElementById(
-      "passRoute"
-    ).textContent =
-      route;
-
-    document.getElementById(
-      "passStatus"
-    ).textContent =
-      status;
-
-    document.getElementById(
-      "passDestination"
-    ).textContent =
-      destination;
-
-
-    sessionStorage.setItem(
-      "roamzRoute",
-      JSON.stringify({
-        route,
-        status,
-        destination,
-        choices
-      })
-    );
-
-
-    showScreen("gate");
-
-  }
-
-
-  function showClaim() {
-
-    showScreen("claim");
-
-  }
-
-
-  /*
-  ========================================
-  WHITELIST FORM
-  ========================================
-  */
-
-  const form =
-    document.getElementById(
-      "whitelistForm"
-    );
-
-  const button =
-    document.getElementById(
-      "submitButton"
-    );
-
-  const message =
-    document.getElementById(
-      "formMessage"
-    );
-
-
-  form.addEventListener(
-    "submit",
-    async (event) => {
-
-      event.preventDefault();
-
-
-      button.disabled = true;
-
-      button.textContent =
-        "ROAMING...";
-
-      message.textContent =
-        "";
-
-      message.className =
-        "message";
-
-
-      const x_handle =
-        document.getElementById(
-          "x_handle"
-        ).value.trim();
-
-      const wallet_address =
-        document.getElementById(
-          "wallet_address"
-        ).value.trim();
-
-      const comment_url =
-        document.getElementById(
-          "comment_url"
-        ).value.trim();
-
-
-      try {
-
-        const response =
-          await fetch(
-            "/api/whitelist",
-            {
-
-              method:
-                "POST",
-
-              headers: {
-                "Content-Type":
-                  "application/json"
-              },
-
-              body:
-                JSON.stringify({
-                  x_handle,
-                  wallet_address,
-                  comment_url
-                })
-
-            }
-          );
-
-
-        const result =
-          await response.json();
-
-
-        if (!response.ok) {
-
-          throw new Error(
-            result.error ||
-            "Something went wrong."
-          );
-
-        }
-
-
-        form.reset();
-
-        showScreen(
-          "success"
-        );
-
-
-      } catch (error) {
-
-        message.textContent =
-          error.message;
-
-        message.className =
-          "message error";
-
-      } finally {
-
-        button.disabled =
-          false;
-
-        button.textContent =
-          "SUBMIT ENTRY →";
-
-      }
-
-    }
-  );
-
+/* EDIT ONLY THESE TWO URLS */
+const X_PROFILE="https://x.com/YOUR_USERNAME";
+const WL_POST="https://x.com/YOUR_USERNAME/status/YOUR_POST_ID";
+
+const screens=[...document.querySelectorAll(".screen")];
+function showScreen(id){screens.forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active");window.scrollTo(0,0)}
+function toast(t){const el=document.getElementById("toast");el.textContent=t;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),1500)}
+
+landingX.href=X_PROFILE;followLink.href=X_PROFILE;postLink1.href=WL_POST;postLink2.href=WL_POST;
+[["followLink","taskFollow"],["postLink1","taskLike"],["postLink2","taskReply"]].forEach(([link,task])=>document.getElementById(link).addEventListener("click",()=>document.getElementById(task).classList.add("done")));
+
+/* TOP-DOWN GAME */
+const canvas=document.getElementById("routeCanvas"),ctx=canvas.getContext("2d"),W={w:900,h:675};
+const player={x:112,y:565,r:16},gate={x:770,y:88,w:70,h:58},keys={up:false,down:false,left:false,right:false};
+const obstacles=[{x:170,y:120,w:190,h:120},{x:450,y:70,w:175,h:145},{x:420,y:330,w:220,h:105},{x:130,y:365,w:170,h:120},{x:675,y:245,w:120,h:170}];
+const signs=[{x:92,y:300,text:"HOME →"},{x:365,y:278,text:"WRONG WAY"},{x:655,y:565,text:"???"},{x:724,y:190,text:"404 ↑"}];
+let running=false,last=0,dist=0,triggered=false;
+
+function startGame(){showScreen("game");resetGame();last=performance.now();requestAnimationFrame(loop)}
+function resetGame(){player.x=112;player.y=565;dist=0;triggered=false;running=true;Object.keys(keys).forEach(k=>keys[k]=false);updateHud();draw()}
+function hits(nx,ny,r){const cx=Math.max(r.x,Math.min(nx,r.x+r.w)),cy=Math.max(r.y,Math.min(ny,r.y+r.h)),dx=nx-cx,dy=ny-cy;return dx*dx+dy*dy<player.r*player.r}
+function can(nx,ny){if(nx-player.r<18||nx+player.r>W.w-18||ny-player.r<18||ny+player.r>W.h-18)return false;return !obstacles.some(r=>hits(nx,ny,r))}
+function move(dx,dy,s){if(!dx&&!dy)return;const l=Math.hypot(dx,dy)||1;dx/=l;dy/=l;const nx=player.x+dx*s,ny=player.y+dy*s;let moved=false;if(can(nx,player.y)){player.x=nx;moved=true}if(can(player.x,ny)){player.y=ny;moved=true}if(moved)dist+=s}
+function loop(now){if(!running)return;const dt=Math.min((now-last)/16.67,2);last=now;move((keys.right?1:0)-(keys.left?1:0),(keys.down?1:0)-(keys.up?1:0),3.35*dt);updateHud();draw();checkGate();requestAnimationFrame(loop)}
+function gateDist(){return Math.hypot(player.x-(gate.x+gate.w/2),player.y-(gate.y+gate.h/2))}
+function updateHud(){hudDistance.textContent=Math.round(dist)+"M";const d=gateDist(),p=Math.max(0,Math.min(100,100-d/9));signalFill.style.width=p+"%";hudSignal.textContent=p>84?"LOCKED":p>65?"STRONG":p>40?"FAINT":"WEAK";hudStatus.textContent=d<180?"SIGNAL NEAR":"ROAMING"}
+function checkGate(){if(triggered)return;const ok=player.x>gate.x-10&&player.x<gate.x+gate.w+10&&player.y>gate.y-10&&player.y<gate.y+gate.h+10;if(ok){triggered=true;running=false;toast("GATE 404 FOUND");setTimeout(finishRoute,900)}}
+function finishRoute(){const routes=["OFF-ROUTE","NORTHBOUND","EAST LOOP","DETOUR","UNKNOWN PATH"],statuses=["ROAMING","DETOURED","MISROUTED","EXPLORING","LOST / FOUND"],dests=["UNKNOWN","SOMEWHERE","NOWHERE","???","GATE 404"];const route=routes[Math.floor(Math.random()*routes.length)],status=statuses[Math.floor(Math.random()*statuses.length)],destination=dests[Math.floor(Math.random()*dests.length)];passRoute.textContent=route;passStatus.textContent=status;passDestination.textContent=destination;passDistance.textContent=Math.max(1,Math.round(dist))+"M";sessionStorage.setItem("roamzRoute",JSON.stringify({route,status,destination,distance:Math.round(dist)}));showScreen("gate")}
+function showClaim(){showScreen("claim")}
+
+function road(x,y,w,h){ctx.fillStyle="#10150a";ctx.fillRect(x,y,w,h);ctx.strokeStyle="rgba(183,255,0,.10)";ctx.strokeRect(x+.5,y+.5,w-1,h-1)}
+function draw(){
+  ctx.clearRect(0,0,W.w,W.h);
+  const bg=ctx.createRadialGradient(450,70,20,450,240,650);bg.addColorStop(0,"#263700");bg.addColorStop(.38,"#111908");bg.addColorStop(1,"#040604");ctx.fillStyle=bg;ctx.fillRect(0,0,W.w,W.h);
+  road(70,510,690,80);road(710,110,80,480);road(300,235,490,76);road(300,235,76,355);
+  ctx.strokeStyle="rgba(183,255,0,.035)";for(let x=0;x<W.w;x+=45){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,W.h);ctx.stroke()}for(let y=0;y<W.h;y+=45){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W.w,y);ctx.stroke()}
+  obstacles.forEach((r,i)=>{ctx.fillStyle=i%2?"#090c08":"#070907";ctx.fillRect(r.x,r.y,r.w,r.h);ctx.strokeStyle="rgba(183,255,0,.12)";ctx.strokeRect(r.x+.5,r.y+.5,r.w-1,r.h-1)});
+  ctx.font='11px "IBM Plex Mono"';ctx.textAlign="center";signs.forEach(s=>{const w=Math.max(70,ctx.measureText(s.text).width+24);ctx.fillStyle="rgba(0,0,0,.8)";ctx.fillRect(s.x-w/2,s.y-15,w,30);ctx.strokeStyle="rgba(183,255,0,.35)";ctx.strokeRect(s.x-w/2+.5,s.y-14.5,w-1,29);ctx.fillStyle="#b7ff00";ctx.fillText(s.text,s.x,s.y+4)});
+  const gx=gate.x+gate.w/2,gy=gate.y+gate.h/2,g=ctx.createRadialGradient(gx,gy,10,gx,gy,95);g.addColorStop(0,"rgba(183,255,0,.36)");g.addColorStop(1,"rgba(183,255,0,0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(gx,gy,95,0,Math.PI*2);ctx.fill();ctx.fillStyle="#0a0d08";ctx.fillRect(gate.x,gate.y,gate.w,gate.h);ctx.strokeStyle="#b7ff00";ctx.lineWidth=2;ctx.strokeRect(gate.x+.5,gate.y+.5,gate.w-1,gate.h-1);ctx.fillStyle="#b7ff00";ctx.font='600 18px "IBM Plex Mono"';ctx.fillText("404",gx,gy+6);
+  const pg=ctx.createRadialGradient(player.x,player.y,8,player.x,player.y,52);pg.addColorStop(0,"rgba(183,255,0,.22)");pg.addColorStop(1,"rgba(183,255,0,0)");ctx.fillStyle=pg;ctx.beginPath();ctx.arc(player.x,player.y,52,0,Math.PI*2);ctx.fill();
+  ctx.save();ctx.translate(player.x,player.y);ctx.fillStyle="#000";ctx.beginPath();ctx.ellipse(0,0,18,20,0,0,Math.PI*2);ctx.fill();ctx.fillStyle="#c8c8c8";ctx.beginPath();ctx.ellipse(-6,-3,2.2,4.2,0,0,Math.PI*2);ctx.ellipse(6,-3,2.2,4.2,0,0,Math.PI*2);ctx.fill();ctx.strokeStyle="rgba(183,255,0,.55)";ctx.lineWidth=1;ctx.beginPath();ctx.arc(0,0,24,0,Math.PI*2);ctx.stroke();ctx.restore()
+}
+
+const map={ArrowUp:"up",w:"up",W:"up",ArrowDown:"down",s:"down",S:"down",ArrowLeft:"left",a:"left",A:"left",ArrowRight:"right",d:"right",D:"right"};
+addEventListener("keydown",e=>{if(!game.classList.contains("active"))return;if(map[e.key]){keys[map[e.key]]=true;e.preventDefault()}},{passive:false});
+addEventListener("keyup",e=>{if(map[e.key])keys[map[e.key]]=false});
+document.querySelectorAll(".dpad").forEach(b=>{const d=b.dataset.dir,start=e=>{e.preventDefault();keys[d]=true;b.classList.add("active")},stop=e=>{e.preventDefault();keys[d]=false;b.classList.remove("active")};b.addEventListener("pointerdown",start);["pointerup","pointercancel","pointerleave"].forEach(ev=>b.addEventListener(ev,stop))});
+
+/* FORM -> EXISTING /api/whitelist.js */
+whitelistForm.addEventListener("submit",async e=>{
+  e.preventDefault();
+  const x_handle=document.getElementById("x_handle").value.trim(),wallet_address=document.getElementById("wallet_address").value.trim(),comment_url=document.getElementById("comment_url").value.trim();
+  formMessage.textContent="";formMessage.className="message";submitButton.disabled=true;submitButton.textContent="ROAMING...";
+  try{
+    const r=await fetch("/api/whitelist",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({x_handle,wallet_address,comment_url})});
+    let result={};try{result=await r.json()}catch{}
+    if(!r.ok)throw new Error(result.error||"Unable to submit entry.");
+    whitelistForm.reset();showScreen("success");
+  }catch(err){formMessage.textContent=err.message||"Something went wrong.";formMessage.className="message error"}
+  finally{submitButton.disabled=false;submitButton.textContent="SUBMIT ENTRY →"}
+});
+draw();
 </script>
-
 </body>
 </html>
