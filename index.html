@@ -3,244 +3,1178 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#050705">
+<meta name="theme-color" content="#020302">
 <title>ROAMZ — No Fixed Destination</title>
+<meta name="description" content="ROAMZ — 1,111 wanderers. No fixed destination.">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.js"
+  }
+}
+</script>
+
 <style>
-:root{--lime:#b7ff00;--lime2:#7db300;--olive:#1c2900;--ink:#050705;--muted:#8d9788;--line:rgba(183,255,0,.26);--danger:#ff6f6f}
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#000;color:#f3f5f1}
-body{font-family:"Space Grotesk",sans-serif;overflow-x:hidden;background:radial-gradient(circle at 50% -5%,#c5ff00 0%,#86bb00 18%,#334800 38%,#0b1006 63%,#000 88%)}
-body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;opacity:.07;background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.18) 0 1px,transparent 1px 3px);mix-blend-mode:soft-light}
-body:after{content:"";position:fixed;inset:-20%;pointer-events:none;z-index:-1;background:radial-gradient(circle,rgba(183,255,0,.17),transparent 58%);filter:blur(90px);animation:ambient 7s ease-in-out infinite}
-@keyframes ambient{0%,100%{transform:translate(-4%,0) scale(.92);opacity:.55}50%{transform:translate(4%,3%) scale(1.08);opacity:1}}
-button,input,a{font:inherit}button{cursor:pointer}.screen{display:none;position:relative;min-height:100vh;min-height:100dvh;width:100%;padding:max(26px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right)) max(30px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left));overflow:hidden}
-.screen.active{display:flex;animation:in .55s cubic-bezier(.2,.8,.2,1)}@keyframes in{from{opacity:0;filter:blur(10px);transform:translateY(14px)}to{opacity:1;filter:blur(0);transform:none}}
-.inner{width:min(1100px,100%);margin:auto;position:relative;z-index:2}.mono{font-family:"IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.13em}.eyebrow{font-size:11px;color:#b7c4b1}.muted{color:var(--muted)}.lime{color:var(--lime)}
-.btn{appearance:none;border:1px solid rgba(183,255,0,.5);background:rgba(0,0,0,.38);color:#f4f7f1;padding:15px 20px;text-decoration:none;font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;transition:.2s;backdrop-filter:blur(10px)}
-.btn:hover,.btn:focus-visible{border-color:var(--lime);color:#050705;background:var(--lime);box-shadow:0 0 30px rgba(183,255,0,.22);outline:none}.btn.primary{background:var(--lime);color:#050705;border-color:var(--lime);font-weight:600}
-.corner-status{position:fixed;top:22px;left:24px;font-size:10px;z-index:20;color:#cad1c6}.corner-brand{position:fixed;right:24px;bottom:22px;z-index:20;font-size:10px;color:#788073}
+:root{
+  --lime:#b7ff00;
+  --lime-soft:#d7ff6a;
+  --olive:#1b2900;
+  --bg:#020302;
+  --panel:rgba(5,8,5,.68);
+  --text:#f2f5ef;
+  --muted:#8d9788;
+  --line:rgba(183,255,0,.18);
+  --red:#ff7676;
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;background:var(--bg);color:var(--text);overflow:hidden}
+body{font-family:"Space Grotesk",sans-serif}
+button,input,a{font:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
 
-/* Landing */
-#landing{align-items:center}.landing-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.75fr);gap:48px;align-items:center}
-.hero-title{font-family:"Syne",sans-serif;font-weight:800;font-size:clamp(76px,14vw,190px);line-height:.72;letter-spacing:-.085em;margin:20px 0 0}.hero-copy{font-size:clamp(22px,3vw,36px);margin:36px 0 0}.hero-sub{margin:12px 0 0;color:#aab4a6}.hero-actions{display:flex;gap:12px;margin-top:40px;flex-wrap:wrap}
-.figure{position:relative;width:min(380px,72vw);aspect-ratio:1/1.15;margin:auto;filter:drop-shadow(0 30px 60px rgba(0,0,0,.45));animation:float 4.8s ease-in-out infinite}@keyframes float{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-12px) rotate(1deg)}}
-.figure-glow{position:absolute;width:90%;height:65%;left:5%;top:8%;border-radius:50%;background:rgba(183,255,0,.28);filter:blur(70px)}
-.head{position:absolute;z-index:2;width:58%;aspect-ratio:1/.96;left:21%;top:5%;background:#000;border-radius:48% 48% 44% 44%}.eye{position:absolute;width:10%;height:19%;top:48%;background:linear-gradient(#e2e2e2,#9da19d);border-radius:50%}.eye.l{left:34%}.eye.r{right:34%}
-.collar{position:absolute;z-index:1;width:66%;height:28%;left:17%;top:52%;background:#020302;border-radius:48% 48% 24% 24%;border:1px solid rgba(183,255,0,.06)}.bodyshape{position:absolute;z-index:1;width:84%;height:44%;left:8%;bottom:2%;background:linear-gradient(#050705,#000);border-radius:44% 44% 16% 16%;border:1px solid rgba(183,255,0,.05)}
-.scan{position:absolute;inset:0;z-index:4;overflow:hidden}.scan:after{content:"";position:absolute;height:2px;left:10%;right:10%;background:linear-gradient(90deg,transparent,var(--lime),transparent);box-shadow:0 0 18px rgba(183,255,0,.7);animation:scan 4s linear infinite}@keyframes scan{from{top:5%;opacity:0}10%{opacity:.7}90%{opacity:.7}to{top:95%;opacity:0}}
+#world{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  display:block;
+  z-index:0;
+  outline:none;
+}
 
-/* Game */
-#game{align-items:center}.game-shell{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:18px}.game-card,.hud,.pass,.tasks,.formpanel,.successpanel{border:1px solid var(--line);background:rgba(0,0,0,.48);backdrop-filter:blur(12px);box-shadow:0 18px 70px rgba(0,0,0,.28)}
-.game-card{padding:10px;min-width:0}.game-top{display:flex;justify-content:space-between;align-items:center;padding:8px 6px 14px;gap:12px}.game-title{font-family:"Syne",sans-serif;font-size:clamp(28px,5vw,52px);margin:0;letter-spacing:-.04em}
-.canvaswrap{position:relative;width:100%;aspect-ratio:4/3;min-height:320px;overflow:hidden;background:#060806;border:1px solid rgba(255,255,255,.05)}canvas{width:100%;height:100%;display:block;touch-action:none}.vignette{position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 90px 35px rgba(0,0,0,.76)}.hint{position:absolute;left:14px;bottom:12px;padding:8px 10px;background:rgba(0,0,0,.66);border:1px solid rgba(183,255,0,.2);font:9px "IBM Plex Mono",monospace;color:#bac4b5}
-.hud{padding:20px}.hudsec{padding-bottom:20px;margin-bottom:20px;border-bottom:1px solid rgba(183,255,0,.13)}.hudsec:last-child{border:0;margin:0;padding:0}.label{font:9px "IBM Plex Mono",monospace;letter-spacing:.1em;color:#798274}.value{font:14px "IBM Plex Mono",monospace;margin-top:7px}.bar{margin-top:12px;height:5px;background:#15200c;overflow:hidden}.bar i{display:block;height:100%;width:15%;background:var(--lime);box-shadow:0 0 18px var(--lime);transition:width .25s}
-.controls{display:none;margin:18px auto 0;width:190px;height:145px;position:relative;user-select:none;touch-action:none}.dpad{position:absolute;width:58px;height:58px;border:1px solid rgba(183,255,0,.35);background:rgba(0,0,0,.65);color:#e8eee3;font:18px "IBM Plex Mono",monospace;display:grid;place-items:center;border-radius:12px}.dpad.active{background:var(--lime);color:#000}.up{top:0;left:66px}.down{bottom:0;left:66px}.left{left:0;top:66px}.right{right:0;top:66px}
+.fx{
+  position:fixed;
+  inset:0;
+  z-index:3;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 50% 38%, transparent 0 30%, rgba(0,0,0,.18) 68%, rgba(0,0,0,.7) 100%),
+    linear-gradient(180deg, rgba(183,255,0,.025), transparent 35%);
+}
+.fx::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  opacity:.045;
+  background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.24) 0 1px,transparent 1px 3px);
+  mix-blend-mode:soft-light;
+}
 
-/* Gate */
-#gate{align-items:center}.gate-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.8fr);gap:28px;align-items:center}.gate-title{font-family:"Syne",sans-serif;font-size:clamp(60px,12vw,150px);line-height:.75;letter-spacing:-.07em;margin:14px 0 24px}.gate-code{display:inline-block;border:1px solid var(--lime);color:var(--lime);padding:7px 10px;font-size:10px}.pass{padding:24px}.passhead{display:flex;justify-content:space-between;padding-bottom:18px;border-bottom:1px solid rgba(183,255,0,.14)}.passgrid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:22px}.actions{display:flex;gap:10px;margin-top:28px;flex-wrap:wrap}
+.topbar{
+  position:fixed;
+  top:0;left:0;right:0;
+  z-index:20;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:max(20px,env(safe-area-inset-top)) 28px 18px;
+  pointer-events:none;
+}
+.brand{
+  font:800 22px "Syne",sans-serif;
+  letter-spacing:-.06em;
+}
+.signal{
+  font:500 10px "IBM Plex Mono",monospace;
+  letter-spacing:.12em;
+  color:#9ea999;
+}
+.signal i{
+  display:inline-block;
+  width:6px;height:6px;
+  margin-right:8px;
+  border-radius:50%;
+  background:var(--lime);
+  box-shadow:0 0 14px var(--lime);
+  animation:pulse 1.8s ease-in-out infinite;
+}
+@keyframes pulse{50%{opacity:.35;box-shadow:0 0 4px var(--lime)}}
 
-/* Claim */
-#claim{align-items:flex-start}.claimhead{padding-top:52px;margin-bottom:26px}.claimtitle{font-family:"Syne",sans-serif;font-size:clamp(50px,9vw,110px);line-height:.82;letter-spacing:-.06em;margin:10px 0 0}.claimgrid{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:18px}.tasks,.formpanel{padding:22px}
-.task{display:grid;grid-template-columns:32px 1fr auto;gap:14px;align-items:center;padding:18px 0;border-bottom:1px solid rgba(183,255,0,.13)}.task:last-child{border:0}.tasknum{font:10px "IBM Plex Mono",monospace;color:#667060}.task small{display:block;color:#879082;margin-top:4px}.task.done .tasknum,.task.done strong{color:var(--lime)}.task.done .tasknum:after{content:" ✓"}
-.field{margin-bottom:22px}.field label{display:block;font:9px "IBM Plex Mono",monospace;letter-spacing:.12em;color:#8f998a;margin-bottom:10px}.field input{width:100%;border:1px solid rgba(183,255,0,.2);background:#050705;color:#f3f5f1;padding:15px 14px;outline:none}.field input:focus{border-color:var(--lime);box-shadow:0 0 0 2px rgba(183,255,0,.07)}
-.submit{width:100%;border:0;background:var(--lime);color:#020302;padding:16px 18px;font:600 12px "IBM Plex Mono",monospace;letter-spacing:.08em;text-transform:uppercase}.submit:disabled{opacity:.42;cursor:not-allowed}.message{min-height:18px;margin-top:14px;font:10px "IBM Plex Mono",monospace;color:#aeb8aa;text-align:center}.message.error{color:var(--danger)}
+.screen{
+  position:fixed;
+  inset:0;
+  z-index:10;
+  display:none;
+  opacity:0;
+  pointer-events:none;
+}
+.screen.active{
+  display:block;
+  opacity:1;
+  pointer-events:auto;
+  animation:screenIn .55s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes screenIn{
+  from{opacity:0;transform:translateY(10px);filter:blur(8px)}
+  to{opacity:1;transform:none;filter:blur(0)}
+}
 
-/* Success */
-#success{align-items:center}.successpanel{width:min(760px,100%);padding:clamp(28px,5vw,56px);text-align:center;margin:auto}.successtitle{font-family:"Syne",sans-serif;font-size:clamp(58px,11vw,130px);line-height:.78;letter-spacing:-.065em;margin:20px 0 30px}.successgrid{width:min(430px,100%);margin:28px auto 0;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(183,255,0,.14);border:1px solid rgba(183,255,0,.14)}.successgrid>div{background:#050705;padding:18px;text-align:left}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(30px);background:#050705;border:1px solid var(--lime);padding:12px 16px;font:10px "IBM Plex Mono",monospace;opacity:0;pointer-events:none;transition:.25s;z-index:200}.toast.show{opacity:1;transform:translateX(-50%)}
+.mono{
+  font-family:"IBM Plex Mono",monospace;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+}
+.kicker{font-size:10px;color:#aab3a6}
+.muted{color:var(--muted)}
 
-@media(max-width:860px){.landing-grid,.gate-grid,.claimgrid,.game-shell{grid-template-columns:1fr}.landing-grid{text-align:center}.hero-actions{justify-content:center}.figure{width:min(320px,72vw)}.hud{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.hudsec{border:0;border-right:1px solid rgba(183,255,0,.13);margin:0;padding:0 12px 0 0}.hudsec:last-child{border:0}.claimhead{padding-top:20px}.controls{display:block}}
-@media(max-width:560px){.screen{padding-left:16px;padding-right:16px}.corner-status{left:16px;top:14px}.corner-brand{right:16px;bottom:14px}.hero-title{font-size:clamp(68px,26vw,110px)}.canvaswrap{min-height:280px;aspect-ratio:1}.hud{grid-template-columns:1fr 1fr;padding:16px}.hudsec{border-right:0;border-bottom:1px solid rgba(183,255,0,.13);padding-bottom:12px;margin-bottom:12px}.hudsec:nth-child(2){border-bottom:0}.hudsec:nth-child(3){grid-column:1/-1;border:0;margin:0}.passgrid,.successgrid{grid-template-columns:1fr}.task{grid-template-columns:28px 1fr}.task .btn{grid-column:1/-1;width:100%;text-align:center}}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+.pill{
+  appearance:none;
+  border:1px solid rgba(183,255,0,.34);
+  color:var(--text);
+  background:rgba(3,5,3,.52);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border-radius:999px;
+  padding:14px 20px;
+  font:500 11px "IBM Plex Mono",monospace;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  transition:.22s ease;
+}
+.pill:hover,.pill:focus-visible{
+  outline:none;
+  background:var(--lime);
+  color:#030503;
+  border-color:var(--lime);
+  transform:translateY(-2px);
+  box-shadow:0 0 34px rgba(183,255,0,.20);
+}
+.pill.primary{
+  color:#030503;
+  background:var(--lime);
+  border-color:var(--lime);
+  font-weight:600;
+}
+.pill.primary:hover{background:var(--lime-soft)}
+
+/* LANDING */
+#landing .content{
+  position:absolute;
+  left:clamp(24px,6vw,92px);
+  bottom:clamp(42px,10vh,110px);
+  width:min(700px,calc(100vw - 48px));
+}
+.hero{
+  margin:12px 0 0;
+  font:800 clamp(82px,15vw,210px)/.72 "Syne",sans-serif;
+  letter-spacing:-.085em;
+  text-shadow:0 20px 80px rgba(0,0,0,.4);
+}
+.tagline{
+  margin:34px 0 0;
+  font-size:clamp(21px,2.8vw,36px);
+  letter-spacing:-.03em;
+}
+.sub{
+  max-width:510px;
+  margin:10px 0 0;
+  color:#929d8e;
+  font-size:14px;
+  line-height:1.55;
+}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:30px}
+.scroll-note{
+  position:absolute;
+  right:30px;
+  bottom:28px;
+  font:9px "IBM Plex Mono",monospace;
+  letter-spacing:.12em;
+  color:#66705f;
+  writing-mode:vertical-rl;
+}
+
+/* GAME HUD */
+#gameHud{pointer-events:none}
+.objective{
+  position:absolute;
+  left:28px;
+  top:96px;
+}
+.objective h2{
+  margin:7px 0 0;
+  font:800 clamp(32px,5vw,62px)/.9 "Syne",sans-serif;
+  letter-spacing:-.055em;
+}
+.objective p{margin:9px 0 0;font-size:12px;color:#85907f}
+
+.stats{
+  position:absolute;
+  top:96px;
+  right:28px;
+  display:flex;
+  gap:8px;
+}
+.stat{
+  min-width:116px;
+  padding:13px 15px;
+  border:1px solid rgba(183,255,0,.14);
+  border-radius:18px;
+  background:rgba(3,5,3,.5);
+  backdrop-filter:blur(12px);
+}
+.stat .l{font:9px "IBM Plex Mono",monospace;letter-spacing:.1em;color:#788372}
+.stat .v{margin-top:6px;font:500 12px "IBM Plex Mono",monospace}
+
+.game-tip{
+  position:absolute;
+  left:28px;
+  bottom:28px;
+  padding:11px 14px;
+  border-radius:999px;
+  background:rgba(3,5,3,.58);
+  border:1px solid rgba(183,255,0,.12);
+  color:#7f8979;
+  font:9px "IBM Plex Mono",monospace;
+  letter-spacing:.08em;
+}
+
+/* Mobile joystick */
+.joystick{
+  display:none;
+  position:fixed;
+  left:max(22px,env(safe-area-inset-left));
+  bottom:max(28px,env(safe-area-inset-bottom));
+  width:128px;height:128px;
+  z-index:24;
+  border-radius:50%;
+  border:1px solid rgba(183,255,0,.18);
+  background:rgba(2,3,2,.30);
+  backdrop-filter:blur(10px);
+  touch-action:none;
+}
+.stick{
+  position:absolute;
+  left:39px;top:39px;
+  width:50px;height:50px;
+  border-radius:50%;
+  background:rgba(183,255,0,.16);
+  border:1px solid rgba(183,255,0,.42);
+  box-shadow:0 0 25px rgba(183,255,0,.08);
+  transform:translate(0,0);
+}
+
+/* GATE RESULT */
+#gateResult{
+  background:linear-gradient(90deg,rgba(0,0,0,.82),rgba(0,0,0,.34) 58%,transparent);
+}
+.result-wrap{
+  position:absolute;
+  left:clamp(24px,6vw,90px);
+  top:50%;
+  transform:translateY(-50%);
+  width:min(650px,calc(100vw - 48px));
+}
+.result-code{
+  display:inline-flex;
+  align-items:center;
+  gap:9px;
+  border:1px solid rgba(183,255,0,.42);
+  border-radius:999px;
+  padding:9px 13px;
+  color:var(--lime);
+  font:500 10px "IBM Plex Mono",monospace;
+  letter-spacing:.09em;
+}
+.result-code::before{
+  content:"";
+  width:6px;height:6px;border-radius:50%;
+  background:var(--lime);box-shadow:0 0 12px var(--lime);
+}
+.result-title{
+  margin:22px 0 0;
+  font:800 clamp(64px,11vw,150px)/.75 "Syne",sans-serif;
+  letter-spacing:-.075em;
+}
+.pass{
+  margin-top:30px;
+  width:min(570px,100%);
+  border-top:1px solid rgba(183,255,0,.28);
+  border-bottom:1px solid rgba(183,255,0,.16);
+  padding:17px 0;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+}
+.pass label{
+  display:block;
+  font:9px "IBM Plex Mono",monospace;
+  letter-spacing:.09em;
+  color:#677161;
+}
+.pass strong{
+  display:block;
+  margin-top:7px;
+  font:500 11px "IBM Plex Mono",monospace;
+}
+.result-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+
+/* CLAIM */
+#claim{
+  overflow-y:auto;
+  background:
+    linear-gradient(180deg,rgba(2,3,2,.35),rgba(2,3,2,.92) 38%),
+    radial-gradient(circle at 80% 0%,rgba(183,255,0,.12),transparent 38%);
+}
+.claim-inner{
+  width:min(1040px,calc(100% - 40px));
+  margin:0 auto;
+  padding:110px 0 70px;
+}
+.claim-title{
+  margin:12px 0 42px;
+  font:800 clamp(55px,9vw,115px)/.78 "Syne",sans-serif;
+  letter-spacing:-.07em;
+}
+.claim-grid{
+  display:grid;
+  grid-template-columns:.9fr 1.1fr;
+  gap:46px;
+  align-items:start;
+}
+.task{
+  display:grid;
+  grid-template-columns:34px 1fr auto;
+  gap:12px;
+  align-items:center;
+  padding:18px 0;
+  border-bottom:1px solid rgba(183,255,0,.12);
+}
+.task-num{font:10px "IBM Plex Mono",monospace;color:#65705f}
+.task strong{font-size:14px}
+.task small{display:block;margin-top:4px;color:#7f8979;font-size:11px}
+.task.done strong,.task.done .task-num{color:var(--lime)}
+.task.done .task-num::after{content:" ✓"}
+
+.form{
+  padding:26px;
+  border-radius:28px;
+  border:1px solid rgba(183,255,0,.14);
+  background:rgba(3,5,3,.56);
+  backdrop-filter:blur(18px);
+}
+.field{margin-bottom:20px}
+.field label{
+  display:block;
+  margin-bottom:9px;
+  font:9px "IBM Plex Mono",monospace;
+  letter-spacing:.1em;
+  color:#7d8778;
+}
+.field input{
+  width:100%;
+  border:0;
+  border-bottom:1px solid rgba(183,255,0,.22);
+  border-radius:0;
+  outline:none;
+  padding:12px 0;
+  color:#f2f5ef;
+  background:transparent;
+  font-size:16px;
+}
+.field input:focus{border-color:var(--lime)}
+.submit{
+  width:100%;
+  margin-top:8px;
+  border:0;
+  border-radius:999px;
+  padding:15px 18px;
+  background:var(--lime);
+  color:#020302;
+  font:600 11px "IBM Plex Mono",monospace;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.submit:disabled{opacity:.4;cursor:not-allowed}
+.form-message{
+  min-height:18px;
+  margin-top:13px;
+  text-align:center;
+  font:10px "IBM Plex Mono",monospace;
+  color:#899484;
+}
+.form-message.error{color:var(--red)}
+
+/* SUCCESS */
+#success{
+  background:rgba(0,0,0,.70);
+  backdrop-filter:blur(12px);
+}
+.success-wrap{
+  position:absolute;
+  left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  width:min(740px,calc(100% - 40px));
+  text-align:center;
+}
+.success-title{
+  margin:20px 0 24px;
+  font:800 clamp(64px,11vw,140px)/.76 "Syne",sans-serif;
+  letter-spacing:-.075em;
+}
+.success-meta{
+  display:flex;
+  justify-content:center;
+  gap:34px;
+  margin-top:28px;
+}
+.success-meta div{text-align:left}
+.success-meta label{display:block;font:9px "IBM Plex Mono",monospace;color:#6f796a}
+.success-meta strong{display:block;margin-top:6px;font:500 11px "IBM Plex Mono",monospace}
+.lime{color:var(--lime)}
+
+.loading{
+  position:fixed;inset:0;z-index:99;
+  display:grid;place-items:center;
+  background:#020302;
+  transition:.5s ease;
+}
+.loading.hide{opacity:0;pointer-events:none}
+.loader-line{
+  width:160px;height:2px;margin-top:14px;background:#122000;overflow:hidden
+}
+.loader-line i{
+  display:block;width:45%;height:100%;
+  background:var(--lime);
+  animation:load 1.1s ease-in-out infinite;
+}
+@keyframes load{0%{transform:translateX(-120%)}100%{transform:translateX(340%)}}
+
+@media (max-width:820px){
+  .topbar{padding-left:18px;padding-right:18px}
+  #landing .content{left:22px;bottom:80px}
+  .hero{font-size:clamp(78px,25vw,128px)}
+  .tagline{font-size:22px}
+  .stats{right:18px;top:82px}
+  .stat:nth-child(2){display:none}
+  .objective{left:18px;top:82px}
+  .game-tip{display:none}
+  .joystick{display:block}
+  .claim-grid{grid-template-columns:1fr;gap:26px}
+  .claim-inner{padding-top:88px}
+  .pass{grid-template-columns:1fr 1fr}
+}
+@media (max-width:520px){
+  .brand{font-size:18px}
+  .signal{font-size:8px}
+  #landing .content{bottom:74px}
+  .hero{font-size:clamp(72px,26vw,110px)}
+  .hero-sub{font-size:12px;max-width:330px}
+  .actions .pill{width:100%;text-align:center}
+  .objective h2{font-size:31px}
+  .stats{top:auto;right:16px;bottom:25px}
+  .stat{min-width:98px;padding:11px 12px}
+  .result-wrap{left:22px}
+  .result-title{font-size:70px}
+  .pass{grid-template-columns:1fr 1fr}
+  .claim-inner{width:calc(100% - 28px)}
+  .task{grid-template-columns:26px 1fr}
+  .task .pill{grid-column:1/-1;width:100%;text-align:center}
+  .form{padding:20px}
+  .success-meta{gap:20px}
+}
+@media (pointer:fine){.joystick{display:none!important}}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
 </style>
 </head>
+
 <body>
+<canvas id="world"></canvas>
+<div class="fx"></div>
 
-<div class="corner-status mono">ROAMZ / SIGNAL ONLINE</div>
-<div class="corner-brand mono">ROAMZ.FUN</div>
-<div id="toast" class="toast">SIGNAL FOUND</div>
+<div class="loading" id="loading">
+  <div>
+    <div class="mono kicker">INITIALIZING THE ROUTE</div>
+    <div class="loader-line"><i></i></div>
+  </div>
+</div>
 
-<section id="landing" class="screen active">
-  <div class="inner landing-grid">
-    <div>
-      <div class="eyebrow mono">GENESIS / 1,111 WANDERERS</div>
-      <h1 class="hero-title">ROAMZ</h1>
-      <p class="hero-copy">NO FIXED DESTINATION.</p>
-      <p class="hero-sub">The Route is open. Find Gate 404 to submit your allowlist entry.</p>
-      <div class="hero-actions">
-        <button class="btn primary" onclick="startGame()">ENTER THE ROUTE →</button>
-        <a class="btn" id="landingX" target="_blank" rel="noopener">X / TWITTER ↗</a>
-      </div>
-    </div>
+<header class="topbar">
+  <div class="brand">ROAMZ</div>
+  <div class="signal"><i></i>ROBINHOOD CHAIN / SIGNAL ONLINE</div>
+</header>
 
-    <div class="figure">
-      <div class="figure-glow"></div>
-      <div class="bodyshape"></div>
-      <div class="collar"></div>
-      <div class="head"><span class="eye l"></span><span class="eye r"></span></div>
-      <div class="scan"></div>
+<section class="screen active" id="landing">
+  <div class="content">
+    <div class="kicker mono">1,111 WANDERERS / GENESIS</div>
+    <h1 class="hero">ROAMZ</h1>
+    <p class="tagline">NO FIXED DESTINATION.</p>
+    <p class="sub">Find Gate 404. Leave a signal. Submit your wallet for the OpenSea allowlist.</p>
+    <div class="actions">
+      <button class="pill primary" id="enterRoute">ENTER THE ROUTE →</button>
+      <a class="pill" id="landingX" target="_blank" rel="noopener">X / TWITTER ↗</a>
     </div>
   </div>
+  <div class="scroll-note">THE ROUTE IS UNKNOWN</div>
 </section>
 
-<section id="game" class="screen">
-  <div class="inner">
-    <div class="game-shell">
-      <div class="game-card">
-        <div class="game-top">
-          <div><div class="eyebrow mono">THE ROUTE / TOP-DOWN SIGNAL</div><h2 class="game-title">FIND GATE 404.</h2></div>
-          <button class="btn" onclick="resetGame()">RESET</button>
-        </div>
-        <div class="canvaswrap">
-          <canvas id="routeCanvas" width="900" height="675"></canvas>
-          <div class="vignette"></div>
-          <div class="hint">DESKTOP: WASD / ARROWS · MOBILE: D-PAD</div>
-        </div>
-        <div class="controls">
-          <button class="dpad up" data-dir="up">▲</button>
-          <button class="dpad left" data-dir="left">◀</button>
-          <button class="dpad right" data-dir="right">▶</button>
-          <button class="dpad down" data-dir="down">▼</button>
-        </div>
-      </div>
-
-      <aside class="hud">
-        <div class="hudsec"><div class="label">STATUS</div><div id="hudStatus" class="value">ROAMING</div></div>
-        <div class="hudsec"><div class="label">DISTANCE</div><div id="hudDistance" class="value">0M</div></div>
-        <div class="hudsec"><div class="label">GATE SIGNAL</div><div id="hudSignal" class="value">WEAK</div><div class="bar"><i id="signalFill"></i></div></div>
-      </aside>
-    </div>
+<section class="screen" id="gameHud">
+  <div class="objective">
+    <div class="kicker mono">THE ROUTE</div>
+    <h2>FIND GATE 404.</h2>
+    <p>Follow the signal. The wrong road still counts.</p>
   </div>
+  <div class="stats">
+    <div class="stat"><div class="l">SIGNAL</div><div class="v" id="signalText">WEAK</div></div>
+    <div class="stat"><div class="l">DISTANCE</div><div class="v" id="distanceText">0M</div></div>
+  </div>
+  <div class="game-tip">WASD / ARROW KEYS TO ROAM</div>
 </section>
 
-<section id="gate" class="screen">
-  <div class="inner gate-grid">
-    <div>
-      <span class="gate-code mono">GATE 404 / SIGNAL FOUND</span>
-      <h2 class="gate-title">YOU<br>FOUND IT.</h2>
-      <p class="muted">The Route recorded your movement. Your pass is ready.</p>
-      <div class="actions">
-        <button class="btn primary" onclick="showClaim()">CLAIM WL →</button>
-        <button class="btn" onclick="startGame()">ROAM AGAIN</button>
-      </div>
-    </div>
+<div class="joystick" id="joystick" aria-label="Movement joystick">
+  <div class="stick" id="stick"></div>
+</div>
 
+<section class="screen" id="gateResult">
+  <div class="result-wrap">
+    <div class="result-code">GATE 404 / SIGNAL FOUND</div>
+    <h2 class="result-title">YOU<br>FOUND IT.</h2>
     <div class="pass">
-      <div class="passhead"><div><div class="eyebrow mono">ROAMZ PASS</div><div class="value">GATE 404</div></div><div class="lime mono">VALID</div></div>
-      <div class="passgrid">
-        <div><div class="label">ROUTE</div><div class="value" id="passRoute">OFF-ROUTE</div></div>
-        <div><div class="label">STATUS</div><div class="value" id="passStatus">DETOURED</div></div>
-        <div><div class="label">DESTINATION</div><div class="value" id="passDestination">UNKNOWN</div></div>
-        <div><div class="label">DISTANCE</div><div class="value" id="passDistance">0M</div></div>
-      </div>
+      <div><label>ROUTE</label><strong id="passRoute">OFF-ROUTE</strong></div>
+      <div><label>STATUS</label><strong id="passStatus">DETOURED</strong></div>
+      <div><label>DESTINATION</label><strong id="passDestination">UNKNOWN</strong></div>
+      <div><label>DISTANCE</label><strong id="passDistance">0M</strong></div>
+    </div>
+    <div class="result-actions">
+      <button class="pill primary" id="claimBtn">CLAIM WL →</button>
+      <button class="pill" id="roamAgain">ROAM AGAIN</button>
     </div>
   </div>
 </section>
 
-<section id="claim" class="screen">
-  <div class="inner">
-    <div class="claimhead"><div class="eyebrow mono">GATE 404 / ALLOWLIST</div><h2 class="claimtitle">COMPLETE<br>THE SIGNAL.</h2></div>
-    <div class="claimgrid">
-      <div class="tasks">
-        <div class="eyebrow mono">X TASKS</div>
-        <div class="task" id="taskFollow"><div class="tasknum">01</div><div><strong>Follow Roamz</strong><small>Open the official X profile.</small></div><a class="btn" id="followLink" target="_blank" rel="noopener">FOLLOW ↗</a></div>
-        <div class="task" id="taskLike"><div class="tasknum">02</div><div><strong>Like the WL post</strong><small>Open the allowlist announcement.</small></div><a class="btn" id="postLink1" target="_blank" rel="noopener">VIEW POST ↗</a></div>
-        <div class="task" id="taskReply"><div class="tasknum">03</div><div><strong>Reply to the post</strong><small>Then paste your reply URL.</small></div><a class="btn" id="postLink2" target="_blank" rel="noopener">REPLY ↗</a></div>
-        <p class="muted" style="font-size:12px;line-height:1.6;margin:18px 0 0">Clicking only marks a task as opened. Final approval is reviewed from your X handle and reply URL.</p>
+<section class="screen" id="claim">
+  <div class="claim-inner">
+    <div class="kicker mono">GATE 404 / ALLOWLIST</div>
+    <h2 class="claim-title">COMPLETE<br>THE SIGNAL.</h2>
+
+    <div class="claim-grid">
+      <div>
+        <div class="task" id="taskFollow">
+          <div class="task-num">01</div>
+          <div><strong>Follow Roamz</strong><small>Open the official X profile.</small></div>
+          <a class="pill" id="followLink" target="_blank" rel="noopener">FOLLOW ↗</a>
+        </div>
+        <div class="task" id="taskLike">
+          <div class="task-num">02</div>
+          <div><strong>Like the WL post</strong><small>Open the allowlist announcement.</small></div>
+          <a class="pill" id="postLink1" target="_blank" rel="noopener">VIEW POST ↗</a>
+        </div>
+        <div class="task" id="taskReply">
+          <div class="task-num">03</div>
+          <div><strong>Reply to the post</strong><small>Paste the reply URL into the form.</small></div>
+          <a class="pill" id="postLink2" target="_blank" rel="noopener">REPLY ↗</a>
+        </div>
+        <p class="muted" style="font-size:11px;line-height:1.6;margin-top:18px">
+          Task clicks are visual progress only. Final approval is reviewed from the X handle and reply URL you submit.
+        </p>
       </div>
 
-      <form id="whitelistForm" class="formpanel">
-        <div class="eyebrow mono" style="margin-bottom:22px">SUBMIT ENTRY</div>
-        <div class="field"><label for="x_handle">X HANDLE</label><input id="x_handle" type="text" placeholder="@username" required></div>
-        <div class="field"><label for="wallet_address">EVM WALLET ADDRESS</label><input id="wallet_address" type="text" placeholder="0x..." required></div>
-        <div class="field"><label for="comment_url">COMMENT / REPLY URL</label><input id="comment_url" type="url" placeholder="https://x.com/username/status/..." required></div>
-        <button id="submitButton" class="submit" type="submit">SUBMIT ENTRY →</button>
-        <div id="formMessage" class="message"></div>
+      <form class="form" id="whitelistForm">
+        <div class="kicker mono" style="margin-bottom:24px">SUBMIT ENTRY</div>
+        <div class="field">
+          <label for="x_handle">X HANDLE</label>
+          <input id="x_handle" type="text" placeholder="@username" autocomplete="off" required>
+        </div>
+        <div class="field">
+          <label for="wallet_address">EVM WALLET ADDRESS</label>
+          <input id="wallet_address" type="text" placeholder="0x..." autocomplete="off" required>
+        </div>
+        <div class="field">
+          <label for="comment_url">COMMENT / REPLY URL</label>
+          <input id="comment_url" type="url" placeholder="https://x.com/username/status/..." autocomplete="off" required>
+        </div>
+        <button class="submit" id="submitButton" type="submit">SUBMIT ENTRY →</button>
+        <div class="form-message" id="formMessage"></div>
       </form>
     </div>
   </div>
 </section>
 
-<section id="success" class="screen">
-  <div class="inner">
-    <div class="successpanel">
-      <div class="gate-code mono">GATE 404 / ENTRY LOGGED</div>
-      <h2 class="successtitle">ENTRY<br>RECEIVED.</h2>
-      <p class="muted">Keep your reply live until the final allowlist snapshot.</p>
-      <div class="successgrid">
-        <div><div class="label">STATUS</div><div class="value lime">PENDING REVIEW</div></div>
-        <div><div class="label">DESTINATION</div><div class="value">ALLOWLIST</div></div>
-      </div>
-      <div style="margin-top:34px"><span class="mono" style="font-size:10px;color:#7f897a">KEEP ROAMING.</span></div>
+<section class="screen" id="success">
+  <div class="success-wrap">
+    <div class="result-code">GATE 404 / ENTRY LOGGED</div>
+    <h2 class="success-title">ENTRY<br>RECEIVED.</h2>
+    <p class="muted">Keep your reply live until the final allowlist snapshot.</p>
+    <div class="success-meta">
+      <div><label>STATUS</label><strong class="lime">PENDING REVIEW</strong></div>
+      <div><label>DESTINATION</label><strong>ALLOWLIST</strong></div>
     </div>
+    <p class="mono kicker" style="margin-top:36px">KEEP ROAMING.</p>
   </div>
 </section>
 
-<script>
-/* EDIT ONLY THESE TWO URLS */
-const X_PROFILE="https://x.com/YOUR_USERNAME";
-const WL_POST="https://x.com/YOUR_USERNAME/status/YOUR_POST_ID";
+<script type="module">
+import * as THREE from "three";
 
-const screens=[...document.querySelectorAll(".screen")];
-function showScreen(id){screens.forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active");window.scrollTo(0,0)}
-function toast(t){const el=document.getElementById("toast");el.textContent=t;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),1500)}
+/* =========================================================
+   EDIT ONLY THESE TWO URLS
+   ========================================================= */
+const X_PROFILE = "https://x.com/YOUR_USERNAME";
+const WL_POST   = "https://x.com/YOUR_USERNAME/status/YOUR_POST_ID";
 
-landingX.href=X_PROFILE;followLink.href=X_PROFILE;postLink1.href=WL_POST;postLink2.href=WL_POST;
-[["followLink","taskFollow"],["postLink1","taskLike"],["postLink2","taskReply"]].forEach(([link,task])=>document.getElementById(link).addEventListener("click",()=>document.getElementById(task).classList.add("done")));
+/* =========================================================
+   DOM
+   ========================================================= */
+const $ = id => document.getElementById(id);
+const screens = ["landing","gameHud","gateResult","claim","success"];
 
-/* TOP-DOWN GAME */
-const canvas=document.getElementById("routeCanvas"),ctx=canvas.getContext("2d"),W={w:900,h:675};
-const player={x:112,y:565,r:16},gate={x:770,y:88,w:70,h:58},keys={up:false,down:false,left:false,right:false};
-const obstacles=[{x:170,y:120,w:190,h:120},{x:450,y:70,w:175,h:145},{x:420,y:330,w:220,h:105},{x:130,y:365,w:170,h:120},{x:675,y:245,w:120,h:170}];
-const signs=[{x:92,y:300,text:"HOME →"},{x:365,y:278,text:"WRONG WAY"},{x:655,y:565,text:"???"},{x:724,y:190,text:"404 ↑"}];
-let running=false,last=0,dist=0,triggered=false;
-
-function startGame(){showScreen("game");resetGame();last=performance.now();requestAnimationFrame(loop)}
-function resetGame(){player.x=112;player.y=565;dist=0;triggered=false;running=true;Object.keys(keys).forEach(k=>keys[k]=false);updateHud();draw()}
-function hits(nx,ny,r){const cx=Math.max(r.x,Math.min(nx,r.x+r.w)),cy=Math.max(r.y,Math.min(ny,r.y+r.h)),dx=nx-cx,dy=ny-cy;return dx*dx+dy*dy<player.r*player.r}
-function can(nx,ny){if(nx-player.r<18||nx+player.r>W.w-18||ny-player.r<18||ny+player.r>W.h-18)return false;return !obstacles.some(r=>hits(nx,ny,r))}
-function move(dx,dy,s){if(!dx&&!dy)return;const l=Math.hypot(dx,dy)||1;dx/=l;dy/=l;const nx=player.x+dx*s,ny=player.y+dy*s;let moved=false;if(can(nx,player.y)){player.x=nx;moved=true}if(can(player.x,ny)){player.y=ny;moved=true}if(moved)dist+=s}
-function loop(now){if(!running)return;const dt=Math.min((now-last)/16.67,2);last=now;move((keys.right?1:0)-(keys.left?1:0),(keys.down?1:0)-(keys.up?1:0),3.35*dt);updateHud();draw();checkGate();requestAnimationFrame(loop)}
-function gateDist(){return Math.hypot(player.x-(gate.x+gate.w/2),player.y-(gate.y+gate.h/2))}
-function updateHud(){hudDistance.textContent=Math.round(dist)+"M";const d=gateDist(),p=Math.max(0,Math.min(100,100-d/9));signalFill.style.width=p+"%";hudSignal.textContent=p>84?"LOCKED":p>65?"STRONG":p>40?"FAINT":"WEAK";hudStatus.textContent=d<180?"SIGNAL NEAR":"ROAMING"}
-function checkGate(){if(triggered)return;const ok=player.x>gate.x-10&&player.x<gate.x+gate.w+10&&player.y>gate.y-10&&player.y<gate.y+gate.h+10;if(ok){triggered=true;running=false;toast("GATE 404 FOUND");setTimeout(finishRoute,900)}}
-function finishRoute(){const routes=["OFF-ROUTE","NORTHBOUND","EAST LOOP","DETOUR","UNKNOWN PATH"],statuses=["ROAMING","DETOURED","MISROUTED","EXPLORING","LOST / FOUND"],dests=["UNKNOWN","SOMEWHERE","NOWHERE","???","GATE 404"];const route=routes[Math.floor(Math.random()*routes.length)],status=statuses[Math.floor(Math.random()*statuses.length)],destination=dests[Math.floor(Math.random()*dests.length)];passRoute.textContent=route;passStatus.textContent=status;passDestination.textContent=destination;passDistance.textContent=Math.max(1,Math.round(dist))+"M";sessionStorage.setItem("roamzRoute",JSON.stringify({route,status,destination,distance:Math.round(dist)}));showScreen("gate")}
-function showClaim(){showScreen("claim")}
-
-function road(x,y,w,h){ctx.fillStyle="#10150a";ctx.fillRect(x,y,w,h);ctx.strokeStyle="rgba(183,255,0,.10)";ctx.strokeRect(x+.5,y+.5,w-1,h-1)}
-function draw(){
-  ctx.clearRect(0,0,W.w,W.h);
-  const bg=ctx.createRadialGradient(450,70,20,450,240,650);bg.addColorStop(0,"#263700");bg.addColorStop(.38,"#111908");bg.addColorStop(1,"#040604");ctx.fillStyle=bg;ctx.fillRect(0,0,W.w,W.h);
-  road(70,510,690,80);road(710,110,80,480);road(300,235,490,76);road(300,235,76,355);
-  ctx.strokeStyle="rgba(183,255,0,.035)";for(let x=0;x<W.w;x+=45){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,W.h);ctx.stroke()}for(let y=0;y<W.h;y+=45){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W.w,y);ctx.stroke()}
-  obstacles.forEach((r,i)=>{ctx.fillStyle=i%2?"#090c08":"#070907";ctx.fillRect(r.x,r.y,r.w,r.h);ctx.strokeStyle="rgba(183,255,0,.12)";ctx.strokeRect(r.x+.5,r.y+.5,r.w-1,r.h-1)});
-  ctx.font='11px "IBM Plex Mono"';ctx.textAlign="center";signs.forEach(s=>{const w=Math.max(70,ctx.measureText(s.text).width+24);ctx.fillStyle="rgba(0,0,0,.8)";ctx.fillRect(s.x-w/2,s.y-15,w,30);ctx.strokeStyle="rgba(183,255,0,.35)";ctx.strokeRect(s.x-w/2+.5,s.y-14.5,w-1,29);ctx.fillStyle="#b7ff00";ctx.fillText(s.text,s.x,s.y+4)});
-  const gx=gate.x+gate.w/2,gy=gate.y+gate.h/2,g=ctx.createRadialGradient(gx,gy,10,gx,gy,95);g.addColorStop(0,"rgba(183,255,0,.36)");g.addColorStop(1,"rgba(183,255,0,0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(gx,gy,95,0,Math.PI*2);ctx.fill();ctx.fillStyle="#0a0d08";ctx.fillRect(gate.x,gate.y,gate.w,gate.h);ctx.strokeStyle="#b7ff00";ctx.lineWidth=2;ctx.strokeRect(gate.x+.5,gate.y+.5,gate.w-1,gate.h-1);ctx.fillStyle="#b7ff00";ctx.font='600 18px "IBM Plex Mono"';ctx.fillText("404",gx,gy+6);
-  const pg=ctx.createRadialGradient(player.x,player.y,8,player.x,player.y,52);pg.addColorStop(0,"rgba(183,255,0,.22)");pg.addColorStop(1,"rgba(183,255,0,0)");ctx.fillStyle=pg;ctx.beginPath();ctx.arc(player.x,player.y,52,0,Math.PI*2);ctx.fill();
-  ctx.save();ctx.translate(player.x,player.y);ctx.fillStyle="#000";ctx.beginPath();ctx.ellipse(0,0,18,20,0,0,Math.PI*2);ctx.fill();ctx.fillStyle="#c8c8c8";ctx.beginPath();ctx.ellipse(-6,-3,2.2,4.2,0,0,Math.PI*2);ctx.ellipse(6,-3,2.2,4.2,0,0,Math.PI*2);ctx.fill();ctx.strokeStyle="rgba(183,255,0,.55)";ctx.lineWidth=1;ctx.beginPath();ctx.arc(0,0,24,0,Math.PI*2);ctx.stroke();ctx.restore()
+function showScreen(id){
+  screens.forEach(s => $(s).classList.remove("active"));
+  $(id).classList.add("active");
+  $("joystick").style.display = id === "gameHud" && matchMedia("(pointer:coarse)").matches ? "block" : "none";
 }
 
-const map={ArrowUp:"up",w:"up",W:"up",ArrowDown:"down",s:"down",S:"down",ArrowLeft:"left",a:"left",A:"left",ArrowRight:"right",d:"right",D:"right"};
-addEventListener("keydown",e=>{if(!game.classList.contains("active"))return;if(map[e.key]){keys[map[e.key]]=true;e.preventDefault()}},{passive:false});
-addEventListener("keyup",e=>{if(map[e.key])keys[map[e.key]]=false});
-document.querySelectorAll(".dpad").forEach(b=>{const d=b.dataset.dir,start=e=>{e.preventDefault();keys[d]=true;b.classList.add("active")},stop=e=>{e.preventDefault();keys[d]=false;b.classList.remove("active")};b.addEventListener("pointerdown",start);["pointerup","pointercancel","pointerleave"].forEach(ev=>b.addEventListener(ev,stop))});
+$("landingX").href = X_PROFILE;
+$("followLink").href = X_PROFILE;
+$("postLink1").href = WL_POST;
+$("postLink2").href = WL_POST;
 
-/* FORM -> EXISTING /api/whitelist.js */
-whitelistForm.addEventListener("submit",async e=>{
-  e.preventDefault();
-  const x_handle=document.getElementById("x_handle").value.trim(),wallet_address=document.getElementById("wallet_address").value.trim(),comment_url=document.getElementById("comment_url").value.trim();
-  formMessage.textContent="";formMessage.className="message";submitButton.disabled=true;submitButton.textContent="ROAMING...";
-  try{
-    const r=await fetch("/api/whitelist",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({x_handle,wallet_address,comment_url})});
-    let result={};try{result=await r.json()}catch{}
-    if(!r.ok)throw new Error(result.error||"Unable to submit entry.");
-    whitelistForm.reset();showScreen("success");
-  }catch(err){formMessage.textContent=err.message||"Something went wrong.";formMessage.className="message error"}
-  finally{submitButton.disabled=false;submitButton.textContent="SUBMIT ENTRY →"}
+[["followLink","taskFollow"],["postLink1","taskLike"],["postLink2","taskReply"]].forEach(([link,task])=>{
+  $(link).addEventListener("click",()=>$(task).classList.add("done"));
 });
-draw();
+
+/* =========================================================
+   THREE.JS SETUP
+   ========================================================= */
+const canvas = $("world");
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x020302);
+scene.fog = new THREE.FogExp2(0x020302,0.025);
+
+const camera = new THREE.PerspectiveCamera(46,innerWidth/innerHeight,.1,180);
+camera.position.set(11,10,15);
+
+const renderer = new THREE.WebGLRenderer({
+  canvas,
+  antialias:true,
+  powerPreference:"high-performance"
+});
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
+renderer.setSize(innerWidth,innerHeight);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+
+const clock = new THREE.Clock();
+
+const hemi = new THREE.HemisphereLight(0xcfff73,0x020302,1.1);
+scene.add(hemi);
+
+const sun = new THREE.DirectionalLight(0xdfff8d,2.1);
+sun.position.set(-12,22,10);
+sun.castShadow = true;
+sun.shadow.mapSize.set(1024,1024);
+sun.shadow.camera.left = -38;
+sun.shadow.camera.right = 38;
+sun.shadow.camera.top = 38;
+sun.shadow.camera.bottom = -38;
+scene.add(sun);
+
+const ambientLime = new THREE.PointLight(0xb7ff00,18,30,2);
+ambientLime.position.set(0,8,0);
+scene.add(ambientLime);
+
+/* =========================================================
+   MATERIALS
+   ========================================================= */
+const matGround = new THREE.MeshStandardMaterial({color:0x050805,roughness:.95,metalness:.02});
+const matRoute = new THREE.MeshStandardMaterial({color:0x10170a,roughness:.87,metalness:.05});
+const matBlock = new THREE.MeshStandardMaterial({color:0x080b08,roughness:.72,metalness:.16});
+const matBlock2 = new THREE.MeshStandardMaterial({color:0x0e130b,roughness:.84,metalness:.04});
+const matLime = new THREE.MeshStandardMaterial({
+  color:0x86b900,
+  emissive:0xb7ff00,
+  emissiveIntensity:2.6,
+  roughness:.4,
+  metalness:.12
+});
+const matBlack = new THREE.MeshStandardMaterial({color:0x000000,roughness:.48,metalness:.04});
+const matDark = new THREE.MeshStandardMaterial({color:0x060806,roughness:.8});
+const matEye = new THREE.MeshStandardMaterial({color:0xc9ccc7,roughness:.44});
+const matMetal = new THREE.MeshStandardMaterial({color:0x263020,roughness:.48,metalness:.55});
+
+/* =========================================================
+   WORLD
+   ========================================================= */
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(120,120),matGround);
+ground.rotation.x = -Math.PI/2;
+ground.receiveShadow = true;
+scene.add(ground);
+
+const grid = new THREE.GridHelper(120,60,0x294100,0x0b1308);
+grid.position.y = .015;
+grid.material.transparent = true;
+grid.material.opacity = .22;
+scene.add(grid);
+
+function box(x,z,w,d,h=2,material=matBlock){
+  const mesh = new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);
+  mesh.position.set(x,h/2,z);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  scene.add(mesh);
+  colliders.push({x,z,w,d});
+  return mesh;
+}
+
+function road(x,z,w,d){
+  const mesh = new THREE.Mesh(new THREE.BoxGeometry(w,.05,d),matRoute);
+  mesh.position.set(x,.035,z);
+  mesh.receiveShadow = true;
+  scene.add(mesh);
+}
+
+const colliders = [];
+road(-9,-22,45,8);
+road(11,-5,8,42);
+road(5,10,40,7);
+road(-12,4,7,32);
+road(23,18,8,25);
+
+box(-18,-7,10,10,3.6,matBlock);
+box(-5,-5,8,13,5.2,matBlock2);
+box(10,-18,13,8,4.4,matBlock);
+box(20,-4,9,12,6,matBlock2);
+box(-22,15,13,10,4.8,matBlock2);
+box(-5,20,15,8,3.9,matBlock);
+box(11,20,8,8,6.5,matBlock2);
+
+/* Luminous route line */
+const routePoints = [
+  new THREE.Vector3(-27,.09,-26),
+  new THREE.Vector3(-13,.09,-22),
+  new THREE.Vector3(-12,.09,-3),
+  new THREE.Vector3(7,.09,10),
+  new THREE.Vector3(11,.09,21),
+  new THREE.Vector3(27,.09,27)
+];
+const routeCurve = new THREE.CatmullRomCurve3(routePoints);
+const routeGeo = new THREE.TubeGeometry(routeCurve,100,.055,5,false);
+const routeMat = new THREE.MeshBasicMaterial({color:0x7db300,transparent:true,opacity:.55});
+const routeTube = new THREE.Mesh(routeGeo,routeMat);
+scene.add(routeTube);
+
+/* Text sprites */
+function textSprite(text,{color="#b7ff00",bg="rgba(0,0,0,.72)",scale=3.6}={}){
+  const c=document.createElement("canvas");
+  c.width=512;c.height=128;
+  const g=c.getContext("2d");
+  g.clearRect(0,0,c.width,c.height);
+  g.fillStyle=bg;
+  g.roundRect(18,22,476,84,16);
+  g.fill();
+  g.strokeStyle="rgba(183,255,0,.45)";
+  g.lineWidth=2;
+  g.stroke();
+  g.fillStyle=color;
+  g.font='600 34px "IBM Plex Mono", monospace';
+  g.textAlign="center";
+  g.textBaseline="middle";
+  g.fillText(text,256,64);
+  const tex=new THREE.CanvasTexture(c);
+  tex.colorSpace=THREE.SRGBColorSpace;
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthWrite:false}));
+  s.scale.set(scale,scale*.25,1);
+  return s;
+}
+
+function sign(x,z,text,rot=0){
+  const pole=new THREE.Mesh(new THREE.CylinderGeometry(.07,.08,2.4,8),matMetal);
+  pole.position.set(x,1.2,z);
+  pole.castShadow=true;
+  scene.add(pole);
+  const label=textSprite(text,{scale:4});
+  label.position.set(x,2.45,z);
+  label.material.rotation=rot;
+  scene.add(label);
+}
+sign(-26,-13,"HOME →");
+sign(-12,13,"WRONG WAY");
+sign(8,-9,"NO ROUTE");
+sign(22,11,"404 ↑");
+
+/* Decorative monoliths */
+for(let i=0;i<22;i++){
+  const h=.5+Math.random()*2.5;
+  const m=new THREE.Mesh(new THREE.BoxGeometry(.18,h,.18),Math.random()>.75?matLime:matMetal);
+  m.position.set((Math.random()-.5)*90,h/2,(Math.random()-.5)*90);
+  m.castShadow=true;
+  scene.add(m);
+}
+
+/* =========================================================
+   GATE 404
+   ========================================================= */
+const gate = new THREE.Group();
+gate.position.set(27,0,27);
+scene.add(gate);
+
+const leftP = new THREE.Mesh(new THREE.BoxGeometry(.8,5,.8),matLime);
+leftP.position.set(-2,2.5,0);
+const rightP = leftP.clone();rightP.position.x=2;
+const topP = new THREE.Mesh(new THREE.BoxGeometry(4.8,.8,.8),matLime);
+topP.position.set(0,4.65,0);
+[leftP,rightP,topP].forEach(m=>{m.castShadow=true;gate.add(m)});
+
+const portalMat=new THREE.MeshBasicMaterial({color:0xb7ff00,transparent:true,opacity:.08,side:THREE.DoubleSide});
+const portal=new THREE.Mesh(new THREE.PlaneGeometry(3.5,3.7),portalMat);
+portal.position.set(0,2.25,.05);
+gate.add(portal);
+
+const gateLabel=textSprite("GATE 404",{scale:5});
+gateLabel.position.set(0,5.7,0);
+gate.add(gateLabel);
+
+const gateLight=new THREE.PointLight(0xb7ff00,35,22,2);
+gateLight.position.set(0,3,0);
+gate.add(gateLight);
+
+/* particles around gate */
+const pCount=120;
+const pGeo=new THREE.BufferGeometry();
+const pos=new Float32Array(pCount*3);
+for(let i=0;i<pCount;i++){
+  const a=Math.random()*Math.PI*2,r=2+Math.random()*7;
+  pos[i*3]=27+Math.cos(a)*r;
+  pos[i*3+1]=.4+Math.random()*7;
+  pos[i*3+2]=27+Math.sin(a)*r;
+}
+pGeo.setAttribute("position",new THREE.BufferAttribute(pos,3));
+const particles=new THREE.Points(
+  pGeo,
+  new THREE.PointsMaterial({color:0xb7ff00,size:.06,transparent:true,opacity:.48,depthWrite:false})
+);
+scene.add(particles);
+
+/* =========================================================
+   ROAMZ PLAYER
+   ========================================================= */
+const player = new THREE.Group();
+player.position.set(-27,0,-26);
+scene.add(player);
+
+const torso=new THREE.Mesh(new THREE.CylinderGeometry(.82,1.02,1.35,12),matDark);
+torso.position.y=.82;
+torso.castShadow=true;
+player.add(torso);
+
+const shoulder=new THREE.Mesh(new THREE.TorusGeometry(.91,.18,8,24),matDark);
+shoulder.rotation.x=Math.PI/2;
+shoulder.position.y=1.44;
+shoulder.castShadow=true;
+player.add(shoulder);
+
+const head=new THREE.Mesh(new THREE.SphereGeometry(1,26,20),matBlack);
+head.scale.set(1,1.06,.9);
+head.position.y=2.25;
+head.castShadow=true;
+player.add(head);
+
+const eyeGeo=new THREE.SphereGeometry(.18,16,12);
+const eyeL=new THREE.Mesh(eyeGeo,matEye);
+eyeL.scale.set(.55,1,.2);
+eyeL.position.set(-.34,2.22,.86);
+const eyeR=eyeL.clone();eyeR.position.x=.34;
+player.add(eyeL,eyeR);
+
+const collarRing=new THREE.Mesh(new THREE.TorusGeometry(.87,.08,6,24),matMetal);
+collarRing.rotation.x=Math.PI/2;
+collarRing.position.y=1.55;
+player.add(collarRing);
+
+/* player shadow glow */
+const glow=new THREE.Mesh(
+  new THREE.CircleGeometry(1.7,32),
+  new THREE.MeshBasicMaterial({color:0xb7ff00,transparent:true,opacity:.08,depthWrite:false})
+);
+glow.rotation.x=-Math.PI/2;
+glow.position.y=.03;
+player.add(glow);
+
+/* =========================================================
+   GAME STATE
+   ========================================================= */
+const START = new THREE.Vector3(-27,0,-26);
+const GATE_POS = new THREE.Vector3(27,0,27);
+const keys={up:false,down:false,left:false,right:false};
+let mode="landing";
+let routeDistance=0;
+let gateReached=false;
+let cameraAngle=0;
+let lastMoveDir=new THREE.Vector3(0,0,1);
+
+const camTarget=new THREE.Vector3();
+const desiredCam=new THREE.Vector3();
+
+function circleCollision(px,pz,c){
+  const dx=Math.max(Math.abs(px-c.x)-c.w/2,0);
+  const dz=Math.max(Math.abs(pz-c.z)-c.d/2,0);
+  return dx*dx+dz*dz < .72*.72;
+}
+function allowed(x,z){
+  if(Math.abs(x)>54||Math.abs(z)>54)return false;
+  return !colliders.some(c=>circleCollision(x,z,c));
+}
+
+function startGame(){
+  mode="game";
+  gateReached=false;
+  routeDistance=0;
+  player.position.copy(START);
+  player.rotation.y=0;
+  showScreen("gameHud");
+}
+
+function resetToLanding(){
+  mode="landing";
+  gateReached=false;
+  player.position.copy(START);
+  showScreen("landing");
+}
+
+$("enterRoute").addEventListener("click",startGame);
+$("roamAgain").addEventListener("click",startGame);
+$("claimBtn").addEventListener("click",()=>{mode="claim";showScreen("claim")});
+
+const keyMap={
+  ArrowUp:"up",w:"up",W:"up",
+  ArrowDown:"down",s:"down",S:"down",
+  ArrowLeft:"left",a:"left",A:"left",
+  ArrowRight:"right",d:"right",D:"right"
+};
+addEventListener("keydown",e=>{
+  if(mode!=="game")return;
+  const k=keyMap[e.key];
+  if(k){keys[k]=true;e.preventDefault()}
+},{passive:false});
+addEventListener("keyup",e=>{
+  const k=keyMap[e.key];
+  if(k)keys[k]=false;
+});
+
+/* =========================================================
+   MOBILE JOYSTICK
+   ========================================================= */
+const joystick=$("joystick"),stick=$("stick");
+let joyActive=false,joyId=null;
+const joy={x:0,y:0};
+
+function updateJoy(e){
+  const r=joystick.getBoundingClientRect();
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  let dx=e.clientX-cx,dy=e.clientY-cy;
+  const max=42,len=Math.hypot(dx,dy)||1;
+  if(len>max){dx=dx/len*max;dy=dy/len*max}
+  joy.x=dx/max;joy.y=dy/max;
+  stick.style.transform=`translate(${dx}px,${dy}px)`;
+}
+joystick.addEventListener("pointerdown",e=>{
+  joyActive=true;joyId=e.pointerId;joystick.setPointerCapture(e.pointerId);updateJoy(e)
+});
+joystick.addEventListener("pointermove",e=>{
+  if(joyActive&&e.pointerId===joyId)updateJoy(e)
+});
+function endJoy(e){
+  if(e.pointerId!==joyId)return;
+  joyActive=false;joyId=null;joy.x=joy.y=0;stick.style.transform="translate(0,0)"
+}
+joystick.addEventListener("pointerup",endJoy);
+joystick.addEventListener("pointercancel",endJoy);
+
+/* =========================================================
+   ROUTE PASS
+   ========================================================= */
+function finishRoute(){
+  gateReached=true;
+  mode="result";
+
+  const routes=["OFF-ROUTE","NORTHBOUND","EAST LOOP","DETOUR","UNKNOWN PATH"];
+  const statuses=["ROAMING","DETOURED","MISROUTED","EXPLORING","LOST / FOUND"];
+  const destinations=["UNKNOWN","SOMEWHERE","NOWHERE","???","GATE 404"];
+
+  const data={
+    route:routes[Math.floor(Math.random()*routes.length)],
+    status:statuses[Math.floor(Math.random()*statuses.length)],
+    destination:destinations[Math.floor(Math.random()*destinations.length)],
+    distance:Math.max(1,Math.round(routeDistance))
+  };
+
+  $("passRoute").textContent=data.route;
+  $("passStatus").textContent=data.status;
+  $("passDestination").textContent=data.destination;
+  $("passDistance").textContent=data.distance+"M";
+  sessionStorage.setItem("roamzRoute",JSON.stringify(data));
+
+  showScreen("gateResult");
+}
+
+/* =========================================================
+   UPDATE / CAMERA / ANIMATION
+   ========================================================= */
+function movePlayer(dt){
+  let x=(keys.right?1:0)-(keys.left?1:0);
+  let z=(keys.down?1:0)-(keys.up?1:0);
+
+  if(joyActive){
+    x=joy.x;
+    z=joy.y;
+  }
+
+  const v=new THREE.Vector3(x,0,z);
+  if(v.lengthSq()<.001)return;
+  v.normalize();
+
+  const speed=7.1;
+  const step=speed*dt;
+  const nx=player.position.x+v.x*step;
+  const nz=player.position.z+v.z*step;
+
+  let moved=false;
+  if(allowed(nx,player.position.z)){player.position.x=nx;moved=true}
+  if(allowed(player.position.x,nz)){player.position.z=nz;moved=true}
+
+  if(moved){
+    routeDistance+=step;
+    lastMoveDir.lerp(v,.25).normalize();
+    const targetRot=Math.atan2(v.x,v.z);
+    let diff=targetRot-player.rotation.y;
+    diff=Math.atan2(Math.sin(diff),Math.cos(diff));
+    player.rotation.y+=diff*Math.min(1,dt*10);
+  }
+}
+
+function updateCamera(dt,t){
+  if(mode==="landing"){
+    cameraAngle += dt*.16;
+    const radius=12.5;
+    desiredCam.set(
+      START.x+Math.cos(cameraAngle)*radius,
+      8.7+Math.sin(t*.0005)*.25,
+      START.z+Math.sin(cameraAngle)*radius
+    );
+    camera.position.lerp(desiredCam,1-Math.exp(-dt*2.6));
+    camTarget.set(START.x,1.45,START.z);
+    camera.lookAt(camTarget);
+  }else if(mode==="game"){
+    desiredCam.set(player.position.x+9.5,player.position.y+11.5,player.position.z+11.5);
+    camera.position.lerp(desiredCam,1-Math.exp(-dt*4.8));
+    camTarget.set(player.position.x,1.15,player.position.z);
+    camera.lookAt(camTarget);
+  }else if(mode==="result"){
+    const a=t*.00022;
+    desiredCam.set(27+Math.cos(a)*13,8.4,27+Math.sin(a)*13);
+    camera.position.lerp(desiredCam,1-Math.exp(-dt*2.3));
+    camera.lookAt(27,2.3,27);
+  }else{
+    desiredCam.set(8,13,21);
+    camera.position.lerp(desiredCam,1-Math.exp(-dt*2));
+    camera.lookAt(0,1,0);
+  }
+}
+
+function updateGate(dt,t){
+  const d=player.position.distanceTo(GATE_POS);
+  const signal=Math.max(0,Math.min(1,1-d/72));
+
+  if(mode==="game"){
+    $("distanceText").textContent=Math.round(routeDistance)+"M";
+    $("signalText").textContent=signal>.86?"LOCKED":signal>.68?"STRONG":signal>.42?"FAINT":"WEAK";
+  }
+
+  gateLight.intensity=28+Math.sin(t*.004)*7+signal*20;
+  portal.material.opacity=.06+Math.sin(t*.003)*.025+signal*.12;
+  gate.rotation.y=Math.sin(t*.0005)*.035;
+  particles.rotation.y+=dt*.03;
+
+  if(mode==="game"&&!gateReached&&d<3.2)finishRoute();
+}
+
+function animatePlayer(dt,t){
+  if(mode==="game"){
+    const moving=keys.up||keys.down||keys.left||keys.right||joyActive;
+    player.position.y=moving?Math.abs(Math.sin(t*.012))*.06:Math.sin(t*.0025)*.025;
+  }else{
+    player.position.y=Math.sin(t*.002)*.04;
+  }
+  glow.material.opacity=.055+Math.sin(t*.003)*.025;
+}
+
+function render(){
+  requestAnimationFrame(render);
+  const dt=Math.min(clock.getDelta(),.05);
+  const t=performance.now();
+
+  if(mode==="game")movePlayer(dt);
+  updateCamera(dt,t);
+  updateGate(dt,t);
+  animatePlayer(dt,t);
+
+  renderer.render(scene,camera);
+}
+render();
+
+/* =========================================================
+   RESIZE
+   ========================================================= */
+addEventListener("resize",()=>{
+  camera.aspect=innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+  renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
+});
+
+/* =========================================================
+   WL FORM -> EXISTING /api/whitelist.js
+   ========================================================= */
+$("whitelistForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+
+  const x_handle=$("x_handle").value.trim();
+  const wallet_address=$("wallet_address").value.trim();
+  const comment_url=$("comment_url").value.trim();
+  const btn=$("submitButton");
+  const msg=$("formMessage");
+
+  btn.disabled=true;
+  btn.textContent="ROAMING...";
+  msg.textContent="";
+  msg.className="form-message";
+
+  try{
+    const response=await fetch("/api/whitelist",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({x_handle,wallet_address,comment_url})
+    });
+
+    let result={};
+    try{result=await response.json()}catch{}
+
+    if(!response.ok)throw new Error(result.error||"Unable to submit entry.");
+
+    $("whitelistForm").reset();
+    mode="success";
+    showScreen("success");
+  }catch(err){
+    msg.textContent=err.message||"Something went wrong.";
+    msg.className="form-message error";
+  }finally{
+    btn.disabled=false;
+    btn.textContent="SUBMIT ENTRY →";
+  }
+});
+
+/* Fade loader only after the first rendered scene */
+setTimeout(()=>$("loading").classList.add("hide"),650);
 </script>
 </body>
 </html>
