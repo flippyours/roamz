@@ -7,6 +7,9 @@
 <title>ROAMZ — No Fixed Destination</title>
 <meta name="description" content="ROAMZ — 1,111 wanderers. No fixed destination.">
 
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="%23020302"/><ellipse cx="32" cy="30" rx="19" ry="21" fill="%23000"/><ellipse cx="25" cy="30" rx="3.2" ry="6.4" fill="%23d8ddd4"/><ellipse cx="39" cy="30" rx="3.2" ry="6.4" fill="%23d8ddd4"/><path d="M9 53h46" stroke="%23b7ff00" stroke-width="3" stroke-linecap="round"/></svg>'>
+<link rel="apple-touch-icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180"><rect width="180" height="180" rx="40" fill="%23020302"/><ellipse cx="90" cy="82" rx="52" ry="58" fill="%23000"/><ellipse cx="71" cy="82" rx="9" ry="18" fill="%23d8ddd4"/><ellipse cx="109" cy="82" rx="9" ry="18" fill="%23d8ddd4"/><path d="M28 148h124" stroke="%23b7ff00" stroke-width="9" stroke-linecap="round"/></svg>'>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
@@ -447,12 +450,22 @@ a{color:inherit;text-decoration:none}
 
 @media (max-width:820px){
   .topbar{padding-left:18px;padding-right:18px}
-  #landing .content{left:22px;bottom:80px}
+  #landing .content{left:22px;right:22px;bottom:80px;width:auto}
   .hero{font-size:clamp(78px,25vw,128px)}
   .tagline{font-size:22px}
-  .stats{right:18px;top:82px}
+  .objective{
+    left:18px;right:18px;top:82px;
+    max-width:calc(100vw - 36px);
+  }
+  .objective h2{
+    max-width:100%;
+    font-size:clamp(32px,9.3vw,54px);
+    line-height:.88;
+    overflow-wrap:anywhere;
+  }
+  .objective p{max-width:64vw}
+  .stats{right:18px;top:auto;bottom:24px}
   .stat:nth-child(2){display:none}
-  .objective{left:18px;top:82px}
   .game-tip{display:none}
   .joystick{display:block}
   .claim-grid{grid-template-columns:1fr;gap:26px}
@@ -461,16 +474,24 @@ a{color:inherit;text-decoration:none}
 }
 @media (max-width:520px){
   .brand{font-size:18px}
-  .signal{font-size:8px}
-  #landing .content{bottom:74px}
-  .hero{font-size:clamp(72px,26vw,110px)}
+  .signal{font-size:0}
+  .signal i{margin-right:0}
+  #landing .content{left:16px;right:16px;bottom:72px;width:auto}
+  .hero{font-size:clamp(68px,25vw,106px)}
+  .tagline{font-size:20px}
   .hero-sub{font-size:12px;max-width:330px}
   .actions .pill{width:100%;text-align:center}
-  .objective h2{font-size:31px}
-  .stats{top:auto;right:16px;bottom:25px}
-  .stat{min-width:98px;padding:11px 12px}
-  .result-wrap{left:22px}
-  .result-title{font-size:70px}
+  .objective{left:16px;right:16px;top:72px}
+  .objective h2{
+    font-size:clamp(28px,10.5vw,44px);
+    line-height:.86;
+    letter-spacing:-.045em;
+  }
+  .objective p{font-size:11px;max-width:74vw}
+  .stats{top:auto;right:14px;bottom:20px}
+  .stat{min-width:94px;padding:10px 12px}
+  .result-wrap{left:18px;right:18px;width:auto}
+  .result-title{font-size:clamp(58px,18vw,82px)}
   .pass{grid-template-columns:1fr 1fr}
   .claim-inner{width:calc(100% - 28px)}
   .task{grid-template-columns:26px 1fr}
@@ -510,6 +531,7 @@ a{color:inherit;text-decoration:none}
     <div class="actions">
       <button class="pill primary" id="enterRoute">ENTER THE ROUTE →</button>
       <a class="pill" id="landingX" target="_blank" rel="noopener">X / TWITTER ↗</a>
+      <a class="pill" id="landingOpenSea" target="_blank" rel="noopener">OPENSEA ↗</a>
     </div>
   </div>
   <div class="scroll-note">THE ROUTE IS UNKNOWN</div>
@@ -606,7 +628,10 @@ a{color:inherit;text-decoration:none}
       <div><label>STATUS</label><strong class="lime">PENDING REVIEW</strong></div>
       <div><label>DESTINATION</label><strong>ALLOWLIST</strong></div>
     </div>
-    <p class="mono kicker" style="margin-top:36px">KEEP ROAMING.</p>
+    <div style="margin-top:28px">
+      <a class="pill" id="successOpenSea" target="_blank" rel="noopener">VIEW ON OPENSEA ↗</a>
+    </div>
+    <p class="mono kicker" style="margin-top:28px">KEEP ROAMING.</p>
   </div>
 </section>
 
@@ -616,8 +641,9 @@ import * as THREE from "three";
 /* =========================================================
    EDIT ONLY THESE TWO URLS
    ========================================================= */
-const X_PROFILE = "https://x.com/YOUR_USERNAME";
-const WL_POST   = "https://x.com/YOUR_USERNAME/status/YOUR_POST_ID";
+const X_PROFILE  = "https://x.com/YOUR_USERNAME";
+const WL_POST    = "https://x.com/YOUR_USERNAME/status/YOUR_POST_ID";
+const OPENSEA_URL = "https://opensea.io/collection/YOUR_COLLECTION_SLUG";
 
 /* =========================================================
    DOM
@@ -632,6 +658,8 @@ function showScreen(id){
 }
 
 $("landingX").href = X_PROFILE;
+$("landingOpenSea").href = OPENSEA_URL;
+$("successOpenSea").href = OPENSEA_URL;
 $("followLink").href = X_PROFILE;
 $("postLink1").href = WL_POST;
 $("postLink2").href = WL_POST;
@@ -648,8 +676,8 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x020302);
 scene.fog = new THREE.FogExp2(0x020302,0.025);
 
-const camera = new THREE.PerspectiveCamera(46,innerWidth/innerHeight,.1,180);
-camera.position.set(11,10,15);
+const camera = new THREE.PerspectiveCamera(42,innerWidth/innerHeight,.1,180);
+camera.position.set(13,16,14);
 
 const renderer = new THREE.WebGLRenderer({
   canvas,
@@ -716,13 +744,21 @@ grid.material.transparent = true;
 grid.material.opacity = .22;
 scene.add(grid);
 
+const obstacleMeshes = [];
+
 function box(x,z,w,d,h=2,material=matBlock){
-  const mesh = new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);
+  const fadeMaterial = material.clone();
+  fadeMaterial.transparent = true;
+  fadeMaterial.opacity = 1;
+
+  const mesh = new THREE.Mesh(new THREE.BoxGeometry(w,h,d),fadeMaterial);
   mesh.position.set(x,h/2,z);
   mesh.castShadow = true;
   mesh.receiveShadow = true;
   scene.add(mesh);
+
   colliders.push({x,z,w,d});
+  obstacleMeshes.push(mesh);
   return mesh;
 }
 
@@ -740,13 +776,13 @@ road(5,10,40,7);
 road(-12,4,7,32);
 road(23,18,8,25);
 
-box(-18,-7,10,10,3.6,matBlock);
-box(-5,-5,8,13,5.2,matBlock2);
-box(10,-18,13,8,4.4,matBlock);
-box(20,-4,9,12,6,matBlock2);
-box(-22,15,13,10,4.8,matBlock2);
-box(-5,20,15,8,3.9,matBlock);
-box(11,20,8,8,6.5,matBlock2);
+box(-18,-7,10,10,2.9,matBlock);
+box(-5,-5,8,13,3.8,matBlock2);
+box(10,-18,13,8,3.3,matBlock);
+box(20,-4,9,12,4.1,matBlock2);
+box(-22,15,13,10,3.5,matBlock2);
+box(-5,20,15,8,3.0,matBlock);
+box(11,20,8,8,4.4,matBlock2);
 
 /* Luminous route line */
 const routePoints = [
@@ -1065,9 +1101,10 @@ function updateCamera(dt,t){
     camTarget.set(START.x,1.45,START.z);
     camera.lookAt(camTarget);
   }else if(mode==="game"){
-    desiredCam.set(player.position.x+9.5,player.position.y+11.5,player.position.z+11.5);
+    // Higher isometric angle: keeps Roamz visible and reduces building occlusion.
+    desiredCam.set(player.position.x+11.5,player.position.y+17.5,player.position.z+12.5);
     camera.position.lerp(desiredCam,1-Math.exp(-dt*4.8));
-    camTarget.set(player.position.x,1.15,player.position.z);
+    camTarget.set(player.position.x,1.05,player.position.z);
     camera.lookAt(camTarget);
   }else if(mode==="result"){
     const a=t*.00022;
@@ -1079,6 +1116,33 @@ function updateCamera(dt,t){
     camera.position.lerp(desiredCam,1-Math.exp(-dt*2));
     camera.lookAt(0,1,0);
   }
+}
+
+
+const occlusionRaycaster = new THREE.Raycaster();
+const occlusionDir = new THREE.Vector3();
+const playerFocus = new THREE.Vector3();
+
+function updateOcclusion(dt){
+  // Fade only buildings that sit directly between the camera and Roamz.
+  obstacleMeshes.forEach(m => m.userData.blocking = false);
+
+  playerFocus.set(player.position.x,1.45,player.position.z);
+  occlusionDir.copy(playerFocus).sub(camera.position);
+  const maxDistance = occlusionDir.length();
+  occlusionDir.normalize();
+
+  occlusionRaycaster.set(camera.position,occlusionDir);
+  occlusionRaycaster.far = maxDistance - .6;
+
+  const hits = occlusionRaycaster.intersectObjects(obstacleMeshes,false);
+  hits.forEach(hit => hit.object.userData.blocking = true);
+
+  obstacleMeshes.forEach(m=>{
+    const target = m.userData.blocking && mode==="game" ? .16 : 1;
+    m.material.opacity += (target - m.material.opacity) * Math.min(1,dt*9);
+    m.material.depthWrite = m.material.opacity > .45;
+  });
 }
 
 function updateGate(dt,t){
@@ -1115,6 +1179,7 @@ function render(){
 
   if(mode==="game")movePlayer(dt);
   updateCamera(dt,t);
+  updateOcclusion(dt);
   updateGate(dt,t);
   animatePlayer(dt,t);
 
