@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ROAMZ</title>
+
+  <title>ROAMZ — No Fixed Destination</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 
   <style>
     * {
@@ -16,90 +17,1004 @@
       padding: 0;
     }
 
-    body {
-      width: 100%;
-      height: 100vh;
-      background: #f1f0e8;
-      color: #111;
-      overflow: hidden;
+    :root {
+      --bg: #efefe7;
+      --black: #111111;
+      --green: #b7ff00;
+      --grey: #777;
     }
 
-    main {
-      height: 100%;
+    body {
+      background: var(--bg);
+      color: var(--black);
+      min-height: 100vh;
+      font-family: "Space Grotesk", sans-serif;
+    }
+
+    button,
+    input,
+    a {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .screen {
+      display: none;
+      min-height: 100vh;
+      padding: 32px;
+    }
+
+    .screen.active {
       display: flex;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      padding: 24px;
     }
 
-    .wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    .center {
+      width: 100%;
+      max-width: 900px;
+      text-align: center;
+    }
+
+    .mono {
+      font-family: "IBM Plex Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+    }
+
+    .tiny {
+      font-size: 11px;
     }
 
     .logo {
       font-family: "Syne", sans-serif;
-      font-size: clamp(64px, 11vw, 150px);
+      font-size: clamp(72px, 15vw, 170px);
       font-weight: 800;
-      letter-spacing: -0.08em;
       line-height: .8;
+      letter-spacing: -.08em;
     }
 
-    .status {
-      margin-top: 38px;
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 12px;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-    }
-
-    .route {
-      margin-top: 14px;
-      font-family: "Space Grotesk", sans-serif;
-      font-size: clamp(20px, 2.5vw, 34px);
+    .tagline {
+      margin-top: 36px;
+      font-size: clamp(20px, 3vw, 32px);
       font-weight: 500;
     }
 
+    .sub {
+      margin-top: 14px;
+      color: var(--grey);
+    }
+
+    .btn {
+      display: inline-block;
+      background: transparent;
+      color: var(--black);
+      border: 1.5px solid var(--black);
+      padding: 16px 24px;
+      text-decoration: none;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      transition: .2s;
+    }
+
+    .btn:hover {
+      background: var(--black);
+      color: white;
+    }
+
+    .btn.primary {
+      background: var(--black);
+      color: white;
+    }
+
+    .btn.primary:hover {
+      background: var(--green);
+      color: black;
+    }
+
+    .hero-button {
+      margin-top: 48px;
+    }
+
     .footer {
-      position: absolute;
-      bottom: 30px;
+      position: fixed;
+      bottom: 24px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      opacity: .45;
+    }
+
+    /* ROUTE */
+
+    .route-box {
+      max-width: 760px;
+      margin: auto;
+    }
+
+    .route-step {
+      margin-bottom: 24px;
+    }
+
+    .route-title {
+      font-family: "Syne", sans-serif;
+      font-size: clamp(38px, 7vw, 72px);
+      font-weight: 800;
+      margin-top: 24px;
+    }
+
+    .route-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 44px;
+    }
+
+    .route-options button {
+      min-height: 88px;
+    }
+
+    /* PASS */
+
+    .pass {
+      border: 1.5px solid var(--black);
+      max-width: 520px;
+      margin: 36px auto 0;
+      padding: 28px;
+      text-align: left;
+    }
+
+    .pass-top {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
+    }
+
+    .pass-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .pass-label {
       font-family: "IBM Plex Mono", monospace;
       font-size: 10px;
-      letter-spacing: .16em;
+      color: var(--grey);
+      letter-spacing: .1em;
+    }
+
+    .pass-value {
+      margin-top: 6px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    /* CLAIM */
+
+    .claim-wrap {
+      width: 100%;
+      max-width: 720px;
+      margin: auto;
+    }
+
+    .claim-title {
+      font-family: "Syne", sans-serif;
+      font-size: clamp(48px, 8vw, 82px);
+      font-weight: 800;
+    }
+
+    .tasks {
+      margin-top: 48px;
+      border-top: 1px solid #aaa;
+    }
+
+    .task {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 18px 0;
+      border-bottom: 1px solid #aaa;
+      text-align: left;
+    }
+
+    .task-number {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
       opacity: .5;
     }
 
-    .blink {
-      animation: blink 1.1s steps(2, start) infinite;
+    .task-text {
+      flex: 1;
     }
 
-    @keyframes blink {
-      50% { opacity: 0; }
+    form {
+      margin-top: 56px;
+      text-align: left;
+    }
+
+    .field {
+      margin-bottom: 30px;
+    }
+
+    .field label {
+      display: block;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 10px;
+      letter-spacing: .12em;
+      margin-bottom: 10px;
+    }
+
+    .field input {
+      width: 100%;
+      border: none;
+      border-bottom: 1.5px solid var(--black);
+      background: transparent;
+      padding: 12px 0;
+      font-size: 18px;
+      outline: none;
+    }
+
+    .submit {
+      width: 100%;
+      padding: 18px;
+      border: none;
+      background: var(--black);
+      color: white;
+      font-family: "IBM Plex Mono", monospace;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .submit:hover {
+      background: var(--green);
+      color: black;
+    }
+
+    .submit:disabled {
+      opacity: .5;
+      cursor: wait;
+    }
+
+    .message {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      margin-top: 18px;
+      text-align: center;
+      min-height: 18px;
+    }
+
+    .error {
+      color: #c72d2d;
+    }
+
+    /* SUCCESS */
+
+    .success-mark {
+      font-family: "IBM Plex Mono", monospace;
+      display: inline-block;
+      border: 1px solid black;
+      padding: 8px 12px;
+      margin-bottom: 28px;
+    }
+
+    .success-title {
+      font-family: "Syne", sans-serif;
+      font-size: clamp(54px, 10vw, 110px);
+      font-weight: 800;
+      line-height: .9;
+    }
+
+    .status-card {
+      margin: 42px auto 0;
+      max-width: 430px;
+      border: 1px solid black;
+      padding: 24px;
+    }
+
+    @media(max-width: 650px) {
+      .screen {
+        padding: 22px;
+      }
+
+      .route-options {
+        grid-template-columns: 1fr;
+      }
+
+      .pass-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .task {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .task .btn {
+        width: 100%;
+        text-align: center;
+      }
     }
   </style>
 </head>
 
 <body>
-  <main>
-    <div class="wrap">
 
-      <div class="logo">ROAMZ</div>
+<!-- LANDING -->
+<section id="landing" class="screen active">
+  <div class="center">
 
-      <div class="status">
-        STATUS: <span class="blink">ROAMING</span>
+    <div class="mono tiny">STATUS: ROAMING</div>
+
+    <h1 class="logo">ROAMZ</h1>
+
+    <p class="tagline">NO FIXED DESTINATION.</p>
+
+    <p class="sub">1,111 kept walking.</p>
+
+    <button class="btn primary hero-button" onclick="startRoute()">
+      ENTER THE ROUTE →
+    </button>
+
+  </div>
+</section>
+
+
+<!-- ROUTE GAME -->
+<section id="route" class="screen">
+  <div class="center route-box">
+
+    <div id="routeStep" class="mono tiny">
+      STOP 01 / 03
+    </div>
+
+    <h2 id="routeTitle" class="route-title">
+      THE ROAD SPLITS.
+    </h2>
+
+    <div id="routeOptions" class="route-options"></div>
+
+  </div>
+</section>
+
+
+<!-- GATE / PASS -->
+<section id="gate" class="screen">
+  <div class="center">
+
+    <div class="mono tiny">
+      GATE 404
+    </div>
+
+    <h2 class="route-title">
+      FOUND.
+    </h2>
+
+    <div class="pass">
+
+      <div class="pass-top">
+        <strong class="mono tiny">ROAMZ PASS</strong>
+        <span class="mono tiny">404</span>
       </div>
 
-      <div class="route">
-        THE ROUTE IS STILL LOADING.
-      </div>
+      <div class="pass-grid">
 
-      <div class="footer">
-        NO FIXED DESTINATION.
+        <div>
+          <div class="pass-label">ROUTE</div>
+          <div id="passRoute" class="pass-value"></div>
+        </div>
+
+        <div>
+          <div class="pass-label">STATUS</div>
+          <div id="passStatus" class="pass-value"></div>
+        </div>
+
+        <div>
+          <div class="pass-label">DESTINATION</div>
+          <div id="passDestination" class="pass-value"></div>
+        </div>
+
+        <div>
+          <div class="pass-label">STOPS</div>
+          <div class="pass-value">03</div>
+        </div>
+
       </div>
 
     </div>
-  </main>
+
+    <button class="btn primary hero-button" onclick="showClaim()">
+      CONTINUE →
+    </button>
+
+  </div>
+</section>
+
+
+<!-- CLAIM WL -->
+<section id="claim" class="screen">
+  <div class="claim-wrap">
+
+    <div class="mono tiny">
+      GATE 404 / ALLOWLIST
+    </div>
+
+    <h2 class="claim-title">
+      COMPLETE<br>THE SIGNAL.
+    </h2>
+
+    <div class="tasks">
+
+      <div class="task">
+        <span class="task-number">01</span>
+
+        <div class="task-text">
+          <strong>Follow Roamz</strong>
+          <div class="sub" style="margin-top:4px;">
+            Follow our X account.
+          </div>
+        </div>
+
+        <a
+          class="btn"
+          id="followLink"
+          target="_blank"
+          rel="noopener"
+        >
+          FOLLOW ↗
+        </a>
+      </div>
+
+
+      <div class="task">
+        <span class="task-number">02</span>
+
+        <div class="task-text">
+          <strong>Like the WL post</strong>
+          <div class="sub" style="margin-top:4px;">
+            Find the signal.
+          </div>
+        </div>
+
+        <a
+          class="btn"
+          id="postLink1"
+          target="_blank"
+          rel="noopener"
+        >
+          VIEW POST ↗
+        </a>
+      </div>
+
+
+      <div class="task">
+        <span class="task-number">03</span>
+
+        <div class="task-text">
+          <strong>Reply to the post</strong>
+          <div class="sub" style="margin-top:4px;">
+            Leave your mark on The Route.
+          </div>
+        </div>
+
+        <a
+          class="btn"
+          id="postLink2"
+          target="_blank"
+          rel="noopener"
+        >
+          REPLY ↗
+        </a>
+      </div>
+
+    </div>
+
+
+    <form id="whitelistForm">
+
+      <div class="field">
+        <label>X HANDLE</label>
+
+        <input
+          id="x_handle"
+          type="text"
+          placeholder="@username"
+          required
+        >
+      </div>
+
+
+      <div class="field">
+        <label>EVM WALLET ADDRESS</label>
+
+        <input
+          id="wallet_address"
+          type="text"
+          placeholder="0x..."
+          required
+        >
+      </div>
+
+
+      <div class="field">
+        <label>YOUR COMMENT / REPLY URL</label>
+
+        <input
+          id="comment_url"
+          type="url"
+          placeholder="https://x.com/username/status/..."
+          required
+        >
+      </div>
+
+
+      <button
+        id="submitButton"
+        type="submit"
+        class="submit"
+      >
+        SUBMIT ENTRY →
+      </button>
+
+      <div id="formMessage" class="message"></div>
+
+    </form>
+
+  </div>
+</section>
+
+
+<!-- SUCCESS -->
+<section id="success" class="screen">
+  <div class="center">
+
+    <div class="success-mark">
+      GATE 404
+    </div>
+
+    <h2 class="success-title">
+      ENTRY<br>RECEIVED.
+    </h2>
+
+    <div class="status-card">
+
+      <div class="pass-label">
+        STATUS
+      </div>
+
+      <div class="pass-value">
+        PENDING REVIEW
+      </div>
+
+      <br>
+
+      <div class="pass-label">
+        DESTINATION
+      </div>
+
+      <div class="pass-value">
+        ALLOWLIST
+      </div>
+
+    </div>
+
+    <p class="sub" style="margin-top:30px;">
+      Keep your reply live until the final snapshot.
+    </p>
+
+    <p class="mono tiny" style="margin-top:40px;">
+      KEEP ROAMING.
+    </p>
+
+  </div>
+</section>
+
+
+<div class="footer mono tiny">
+  ROAMZ.FUN
+</div>
+
+
+<script>
+
+  /*
+  ========================================
+  EDIT ONLY THESE 2 URLs
+  ========================================
+  */
+
+  const X_PROFILE =
+    "https://x.com/YOUR_USERNAME";
+
+  const WL_POST =
+    "https://x.com/YOUR_USERNAME/status/YOUR_POST_ID";
+
+
+  /*
+  ========================================
+  X LINKS
+  ========================================
+  */
+
+  document.getElementById("followLink").href =
+    X_PROFILE;
+
+  document.getElementById("postLink1").href =
+    WL_POST;
+
+  document.getElementById("postLink2").href =
+    WL_POST;
+
+
+  /*
+  ========================================
+  SCREEN CONTROL
+  ========================================
+  */
+
+  function showScreen(id) {
+
+    document
+      .querySelectorAll(".screen")
+      .forEach(screen => {
+        screen.classList.remove("active");
+      });
+
+    document
+      .getElementById(id)
+      .classList.add("active");
+
+    window.scrollTo(0, 0);
+  }
+
+
+  /*
+  ========================================
+  ROUTE GAME
+  ========================================
+  */
+
+  const stages = [
+
+    {
+      title:
+        "THE ROAD SPLITS.",
+
+      options: [
+        "FOLLOW THE LIGHT",
+        "TAKE THE WRONG TURN"
+      ]
+    },
+
+    {
+      title:
+        "THE SIGN IS BLANK.",
+
+      options: [
+        "GO NORTH",
+        "FOLLOW ???"
+      ]
+    },
+
+    {
+      title:
+        "A SIGNAL APPEARS.",
+
+      options: [
+        "FOLLOW SIGNAL",
+        "KEEP ROAMING"
+      ]
+    }
+
+  ];
+
+
+  let stage = 0;
+  let choices = [];
+
+
+  function startRoute() {
+
+    stage = 0;
+    choices = [];
+
+    showScreen("route");
+    renderStage();
+  }
+
+
+  function renderStage() {
+
+    document.getElementById(
+      "routeStep"
+    ).textContent =
+      `STOP 0${stage + 1} / 03`;
+
+    document.getElementById(
+      "routeTitle"
+    ).textContent =
+      stages[stage].title;
+
+    const options =
+      document.getElementById(
+        "routeOptions"
+      );
+
+    options.innerHTML = "";
+
+    stages[stage].options.forEach(option => {
+
+      const button =
+        document.createElement(
+          "button"
+        );
+
+      button.className = "btn";
+
+      button.textContent =
+        option;
+
+      button.onclick = () =>
+        chooseRoute(option);
+
+      options.appendChild(
+        button
+      );
+
+    });
+
+  }
+
+
+  function chooseRoute(choice) {
+
+    choices.push(choice);
+
+    if (
+      stage <
+      stages.length - 1
+    ) {
+
+      stage++;
+      renderStage();
+
+    } else {
+
+      generatePass();
+
+    }
+
+  }
+
+
+  /*
+  ========================================
+  ROUTE PASS
+  ========================================
+  */
+
+  function generatePass() {
+
+    const routes = [
+      "NORTH",
+      "SOUTH",
+      "EAST",
+      "WEST",
+      "OFF-ROUTE"
+    ];
+
+    const statuses = [
+      "ROAMING",
+      "LOST",
+      "DETOURED",
+      "EXPLORING",
+      "MISROUTED"
+    ];
+
+    const destinations = [
+      "UNKNOWN",
+      "NOWHERE",
+      "SOMEWHERE",
+      "???"
+    ];
+
+
+    const route =
+      routes[
+        Math.floor(
+          Math.random() *
+          routes.length
+        )
+      ];
+
+    const status =
+      statuses[
+        Math.floor(
+          Math.random() *
+          statuses.length
+        )
+      ];
+
+    const destination =
+      destinations[
+        Math.floor(
+          Math.random() *
+          destinations.length
+        )
+      ];
+
+
+    document.getElementById(
+      "passRoute"
+    ).textContent =
+      route;
+
+    document.getElementById(
+      "passStatus"
+    ).textContent =
+      status;
+
+    document.getElementById(
+      "passDestination"
+    ).textContent =
+      destination;
+
+
+    sessionStorage.setItem(
+      "roamzRoute",
+      JSON.stringify({
+        route,
+        status,
+        destination,
+        choices
+      })
+    );
+
+
+    showScreen("gate");
+
+  }
+
+
+  function showClaim() {
+
+    showScreen("claim");
+
+  }
+
+
+  /*
+  ========================================
+  WHITELIST FORM
+  ========================================
+  */
+
+  const form =
+    document.getElementById(
+      "whitelistForm"
+    );
+
+  const button =
+    document.getElementById(
+      "submitButton"
+    );
+
+  const message =
+    document.getElementById(
+      "formMessage"
+    );
+
+
+  form.addEventListener(
+    "submit",
+    async (event) => {
+
+      event.preventDefault();
+
+
+      button.disabled = true;
+
+      button.textContent =
+        "ROAMING...";
+
+      message.textContent =
+        "";
+
+      message.className =
+        "message";
+
+
+      const x_handle =
+        document.getElementById(
+          "x_handle"
+        ).value.trim();
+
+      const wallet_address =
+        document.getElementById(
+          "wallet_address"
+        ).value.trim();
+
+      const comment_url =
+        document.getElementById(
+          "comment_url"
+        ).value.trim();
+
+
+      try {
+
+        const response =
+          await fetch(
+            "/api/whitelist",
+            {
+
+              method:
+                "POST",
+
+              headers: {
+                "Content-Type":
+                  "application/json"
+              },
+
+              body:
+                JSON.stringify({
+                  x_handle,
+                  wallet_address,
+                  comment_url
+                })
+
+            }
+          );
+
+
+        const result =
+          await response.json();
+
+
+        if (!response.ok) {
+
+          throw new Error(
+            result.error ||
+            "Something went wrong."
+          );
+
+        }
+
+
+        form.reset();
+
+        showScreen(
+          "success"
+        );
+
+
+      } catch (error) {
+
+        message.textContent =
+          error.message;
+
+        message.className =
+          "message error";
+
+      } finally {
+
+        button.disabled =
+          false;
+
+        button.textContent =
+          "SUBMIT ENTRY →";
+
+      }
+
+    }
+  );
+
+</script>
+
 </body>
 </html>
