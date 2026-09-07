@@ -75,50 +75,54 @@
 .review-status{color:var(--lime)}
 @media(max-width:760px){.route-panel h1{font-size:38px}.intro-copy{font-size:11px;line-height:1.65}.wordmark{font-size:38px}.social-task{grid-template-columns:36px minmax(0,1fr) auto;padding:12px;gap:9px}.task-icon{width:36px;height:36px}.task-copy strong{font-size:11px}.task-open{padding:8px;font-size:9px}.roamz-dialog{border-radius:8px!important}}
 
-
-/* ROAMZ V3 — FINAL DESKTOP HERO ALIGNMENT
-   Desktop only. Existing tablet/mobile rules remain unchanged. */
-.title-accent{color:var(--lime)}
-
+/* =========================================================
+   ROAMZ — DESKTOP HERO ALIGNMENT V3
+   Desktop only. Mobile/tablet behavior above remains untouched.
+   Goal: align the top of the 3D minigame with the headline.
+   ========================================================= */
 @media (min-width:1121px){
   .experience{
-    grid-template-columns:minmax(410px,440px) minmax(0,1fr);
-    gap:clamp(42px,3.6vw,64px);
+    grid-template-columns:minmax(405px,430px) minmax(0,1fr);
+    gap:clamp(42px,3.4vw,60px);
     align-items:start;
-    padding-top:36px;
+    padding:36px 0;
   }
 
   .route-panel{
     padding-top:9px;
   }
 
+  /* Keep the existing explicit <br>: ENTER THE / LOST ROUTE. */
   .route-panel h1{
-    font-size:clamp(56px,3.9vw,66px);
-    line-height:.93;
-    letter-spacing:-3px;
-    margin:28px 0 21px;
-    white-space:normal;
-  }
-
-  .route-panel h1 .title-line{
-    display:block;
+    font-size:clamp(56px,3.85vw,64px);
+    line-height:.96;
+    letter-spacing:-2.9px;
+    margin:26px 0 19px;
     white-space:nowrap;
   }
 
-  .route-panel h1 .title-white{
-    color:var(--paper);
-  }
-
+  /* Eyebrow + heading margin is ~50px, so this lines up with ENTER THE. */
   .game-stage{
     align-self:start;
-    margin-top:82px;
-    height:clamp(540px,61vh,670px);
-    max-height:670px;
+    margin-top:52px;
+    height:clamp(560px,calc(100dvh - 220px),690px);
+    max-height:690px;
   }
 }
 
-/* Restore the original compact mobile headline behavior. */
-@media (max-width:760px){
-  .route-panel h1 .title-line{display:inline}
-  .route-panel h1 .title-accent{white-space:nowrap}
+/* Very wide desktop: preserve the same visual alignment without overgrowing. */
+@media (min-width:1600px){
+  .experience{
+    grid-template-columns:430px minmax(0,1fr);
+    gap:60px;
+  }
+
+  .route-panel h1{
+    font-size:64px;
+  }
+
+  .game-stage{
+    margin-top:52px;
+    height:min(690px,calc(100dvh - 220px));
+  }
 }
