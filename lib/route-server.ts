@@ -1,8 +1,25 @@
-import { env } from "cloudflare:workers";
 import { RUN_TTL_MS } from "./route-rules";
 
 export type Run = { id: string; created_at: number; expires_at: number; checkpoint_at: number; collected: number; completed_at: number | null; used: number };
-export function db() { if (!env.DB) throw new Error("Database unavailable"); return env.DB; }
+export function db() {
+  const runtimeEnv = (globalThis as typeof globalThis & {
+    env?: { DB?: unknown };
+  }).env;
+
+  const database = runtimeEnv?.DB;
+
+  if (!database) {
+    throw new Error("Database unavailable");
+  }
+
+  return database as {
+    prepare(query: string): {
+      bind(...values: unknown[]): {
+        first<T>(): Promise<T | null>;
+      };
+    };
+  };
+}
 export function sessionId(request: Request) {
   const value = request.headers.get("cookie")?.match(/(?:^|;\s*)roamz_route=([^;]+)/)?.[1];
   return value && /^[0-9a-f-]{36}$/.test(value) ? value : null;
@@ -33,7 +50,7 @@ export function routeError(e: unknown) {
   return json({ error: "The route is having a quiet moment. Please try again shortly." }, 503);
 }
 export async function clientKey(request: Request) {
-  const ip = request.headers.get("cf-connecting-ip") ?? "local";
+  const ip = request.headers.get("cf-connecting-ip") ?? request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "local";
   const day = new Date().toISOString().slice(0, 10);
   const hash = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`roamz:${day}:${ip}`));
   return Array.from(new Uint8Array(hash), x => x.toString(16).padStart(2, "0")).join("");
