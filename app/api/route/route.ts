@@ -1,5 +1,6 @@
 import { MIN_CHECKPOINT_MS, MIN_ROUTE_MS, RUN_TTL_MS } from "@/lib/route-rules";
-import { clientKey, cookie, db, getRun, json, parseBody, routeError } from "@/lib/route-server";
+import { clientKey, cookie, getRun, json, parseBody, routeError, type Run } from "@/lib/route-server";
+import { queryValue, supabaseRequest } from "@/lib/supabase-server";
 
 export async function GET(request: Request) {
   try {
@@ -15,10 +16,16 @@ export async function POST(request: Request) {
     if (body.event === "start") {
       if (run && !run.used) return json({ collected: run.collected, completed: !!run.completed_at, submitted: false });
       const key = await clientKey(request);
-      const recent = await db().prepare("SELECT COUNT(*) AS total FROM route_runs WHERE client_key = ? AND created_at > ?").bind(key, now - 600000).first<{ total: number }>();
-      if ((recent?.total ?? 0) >= 20) return json({ error: "A few too many new routes. Please try again in ten minutes." }, 429);
+      const { data: recent } = await supabaseRequest<Array<{ id: string }>>(
+        `roamz_route_runs?select=id&client_key=eq.${queryValue(key)}&created_at=gt.${now - 600000}&limit=20`,
+      );
+      if (recent.length >= 20) return json({ error: "A few too many new routes. Please try again in ten minutes." }, 429);
       const id = crypto.randomUUID();
-      await db().prepare("INSERT INTO route_runs (id, client_key, created_at, expires_at, checkpoint_at, collected, used) VALUES (?, ?, ?, ?, ?, 0, 0)").bind(id, key, now, now + RUN_TTL_MS, now).run();
+      await supabaseRequest<Run[]>("roamz_route_runs", {
+        method: "POST",
+        headers: { Prefer: "return=minimal" },
+        body: JSON.stringify({ id, client_key: key, created_at: now, expires_at: now + RUN_TTL_MS, checkpoint_at: now, collected: 0, used: false }),
+      });
       return json({ collected: 0, completed: false, submitted: false }, 201, { "Set-Cookie": cookie(id, request) });
     }
     if (!run) return json({ error: "Your route pass expired. Refresh to start a new adventure." }, 401);
@@ -30,15 +37,22 @@ export async function POST(request: Request) {
       if (index < run.collected) return json({ collected: run.collected });
       if (index !== run.collected) return json({ error: "Find the signals in route order. Retry saving your progress." }, 409);
       if (now - run.checkpoint_at < MIN_CHECKPOINT_MS) return json({ retry_after_ms: MIN_CHECKPOINT_MS - (now - run.checkpoint_at) }, 425);
-      const update = await db().prepare("UPDATE route_runs SET collected = collected + 1, checkpoint_at = ? WHERE id = ? AND collected = ? AND used = 0 AND expires_at > ?").bind(now, run.id, index, now).run();
-      if (!update.meta.changes) return json({ error: "Your route changed in another tab. Refresh to continue." }, 409);
+      const { data: updated } = await supabaseRequest<Run[]>(
+        `roamz_route_runs?id=eq.${queryValue(run.id)}&collected=eq.${index}&used=is.false&expires_at=gt.${now}`,
+        { method: "PATCH", headers: { Prefer: "return=representation" }, body: JSON.stringify({ collected: index + 1, checkpoint_at: now }) },
+      );
+      if (!updated.length) return json({ error: "Your route changed in another tab. Refresh to continue." }, 409);
       return json({ collected: index + 1 });
     }
     if (body.event === "finish") {
       if (run.completed_at) return json({ completed: true, collected: 5 });
       if (run.collected !== 5) return json({ error: "Find all five signals before opening Gate 404." }, 403);
       if (now - run.created_at < MIN_ROUTE_MS) return json({ retry_after_ms: MIN_ROUTE_MS - (now - run.created_at) }, 425);
-      await db().prepare("UPDATE route_runs SET completed_at = ? WHERE id = ? AND collected = 5 AND used = 0 AND completed_at IS NULL").bind(now, run.id).run();
+      const { data: updated } = await supabaseRequest<Run[]>(
+        `roamz_route_runs?id=eq.${queryValue(run.id)}&collected=eq.5&used=is.false&completed_at=is.null`,
+        { method: "PATCH", headers: { Prefer: "return=representation" }, body: JSON.stringify({ completed_at: now }) },
+      );
+      if (!updated.length) return json({ error: "Your route changed in another tab. Refresh to continue." }, 409);
       return json({ completed: true, collected: 5 });
     }
     return json({ error: "Unknown route action." }, 400);

@@ -1,5 +1,6 @@
 import { normalizeEntry } from "@/lib/route-rules";
-import { db, getRun, json, parseBody, routeError } from "@/lib/route-server";
+import { getRun, json, parseBody, routeError } from "@/lib/route-server";
+import { isSupabaseError, supabaseRequest } from "@/lib/supabase-server";
 
 export async function POST(request: Request) {
   try {
@@ -12,17 +13,37 @@ export async function POST(request: Request) {
     const run = await getRun(request);
     if (!run || !run.completed_at || run.collected !== 5) return json({ error: "Complete the route to unlock your allowlist application." }, 403);
     const value = parsed.value!;
-    const existing = await db().prepare("SELECT id, wallet_address, x_handle, comment_url FROM whitelist_entries WHERE run_id = ?").bind(run.id).first<{ id: string; wallet_address: string; x_handle: string; comment_url: string }>();
-    if (existing) {
-      if (existing.wallet_address === value.wallet_address && existing.x_handle === value.x_handle && existing.comment_url === value.comment_url) return json({ entry_id: existing.id, status: "pending_review" });
-      return json({ error: "This route pass has already been submitted." }, 409);
+    try {
+      const { data } = await supabaseRequest<Array<{ entry_id: string; review_status: string; created: boolean }>>(
+        "rpc/submit_roamz_whitelist",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            p_run_id: run.id,
+            p_x_handle: value.x_handle,
+            p_wallet_address: value.wallet_address,
+            p_comment_url: value.comment_url,
+            p_consent_at: new Date().toISOString(),
+          }),
+        },
+      );
+      const result = data[0];
+      if (!result) throw new Error("EMPTY_SUBMISSION");
+      return json({ entry_id: result.entry_id, status: result.review_status }, result.created ? 201 : 200);
+    } catch (error) {
+      if (isSupabaseError(error)) {
+        const details = JSON.stringify((error as Error & { details?: unknown }).details ?? "");
+        if (details.includes("DUPLICATE_ENTRY")) {
+          return json({ error: "This wallet, X handle, or reply has already been submitted." }, 409);
+        }
+        if (details.includes("ROUTE_ALREADY_USED")) {
+          return json({ error: "This route pass has already been submitted." }, 409);
+        }
+        if (details.includes("ROUTE_INVALID")) {
+          return json({ error: "Complete the route again before submitting." }, 403);
+        }
+      }
+      throw error;
     }
-    const id = `RZ-${crypto.randomUUID().slice(0, 8).toUpperCase()}`, now = Date.now();
-    const results = await db().batch([
-      db().prepare("INSERT OR IGNORE INTO whitelist_entries (id, run_id, x_handle, wallet_address, comment_url, duration, status, consent_at, created_at) SELECT ?, ?, ?, ?, ?, ?, 'pending_review', ?, ? WHERE EXISTS (SELECT 1 FROM route_runs WHERE id = ? AND used = 0 AND collected = 5 AND completed_at IS NOT NULL AND expires_at > ?)").bind(id, run.id, value.x_handle, value.wallet_address, value.comment_url, Math.round((run.completed_at - run.created_at) / 1000), now, now, run.id, now),
-      db().prepare("UPDATE route_runs SET used = 1 WHERE id = ? AND EXISTS (SELECT 1 FROM whitelist_entries WHERE run_id = ?)").bind(run.id, run.id),
-    ]);
-    if (!results[0].meta.changes) return json({ error: "This wallet or X handle already has an application. Only one entry per wanderer." }, 409);
-    return json({ entry_id: id, status: "pending_review" }, 201);
   } catch (e) { return routeError(e); }
 }

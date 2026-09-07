@@ -1,11 +1,24 @@
-# Roamz — The Lost Route
+# ROAMZ — THE LOST ROUTE
 
-A lightweight 3D adventure and allowlist application for the Roamz NFT collection.
+Mini-game Three.js dan formulir whitelist ROAMZ untuk deployment melalui GitHub + Vercel dengan penyimpanan di Supabase.
 
-See [ROAMZ-HANDOFF.md](./ROAMZ-HANDOFF.md) for gameplay, source layout, deployment requirements, privacy and abuse-prevention limitations.
+## Mulai di komputer lokal
 
-## Development
+1. Gunakan Node.js 20 atau lebih baru.
+2. Salin `.env.example` menjadi `.env.local` dan isi dua variabel Supabase.
+3. Jalankan `npm install`.
+4. Jalankan `npm run dev`.
 
-Use Node 22 or later. Install with `npm run install:ci`, build with `npm run build`, and test route and submission behavior with `npm test`. Source styling is in `app/globals.css`, game logic in `lib/roamz-game.ts`, and durable application state in D1 under `db/schema.ts`.
+## Deployment
 
-This is a server-backed app, not a standalone HTML file. Public campaign links must be supplied before public launch.
+Baca [`PANDUAN-UPLOAD.md`](./PANDUAN-UPLOAD.md). Jangan menyimpan `.env.local` atau `SUPABASE_SERVICE_ROLE_KEY` di GitHub.
+
+## File utama
+
+- `app/roamz-experience.tsx` — UI, task X, form WL, dan alur mini-game.
+- `lib/roamz-game.ts` — dunia 3D dan kontrol permainan.
+- `app/api/route/route.ts` — penyimpanan progres permainan.
+- `app/api/whitelist/route.ts` — validasi dan submission WL.
+- `supabase/setup.sql` — setup Supabase yang dijalankan satu kali.
+
+Link announcement masih berupa dummy. Ganti `ANNOUNCEMENT_URL` di `app/roamz-experience.tsx` sebelum peluncuran publik.
