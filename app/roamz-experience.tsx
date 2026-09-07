@@ -159,7 +159,7 @@ export default function RoamzExperience() {
       <div className="experience">
         <aside className="route-panel">
           <div className="eyebrow"><span className="tiny-cross">✳</span> THE LOST ROUTE <span className="edition-number">/ 001</span></div>
-          <h1>ENTER THE<br /><span>LOST ROUTE.</span></h1>
+          <h1><span className="title-line title-white">ENTER THE </span><span className="title-line title-accent">LOST ROUTE.</span></h1>
           <p className="intro-copy">RESTORE THE SIGNAL. REACH GATE 404.<br />EARN ACCESS TO THE WL FORM.</p>
 
           <div className="mission-card">
